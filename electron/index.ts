@@ -5,6 +5,10 @@ import { join } from 'path';
 import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron';
 import isDev from 'electron-is-dev';
 
+//prisma
+import { PrismaClient, Prisma } from '@prisma/client';
+const prisma = new PrismaClient();
+
 const height = 600;
 const width = 800;
 
@@ -63,7 +67,22 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 // listen the channel `message` and resend the received message to the renderer process
-ipcMain.on('message', (event: IpcMainEvent, message: any) => {
-  console.log(message);
-  setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
+
+ipcMain.on(
+  'createUser',
+  async (event: IpcMainEvent, userData: Prisma.UserCreateInput) => {
+    // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
+    const newUser = await prisma.user.create({
+      data: userData,
+    })
+    console.log(`se creo el usuario: ${newUser.id} con ${newUser.name}`);
+    event.returnValue = newUser;
+  }
+);
+
+ipcMain.on('getUsers', async(event: IpcMainEvent) => {
+  const users = await prisma.user.findMany();
+  console.log('users');
+  console.log(users);
+  event.returnValue = users;
 });
