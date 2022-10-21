@@ -20,6 +20,6 @@
     "outDir": "../main"
   },
   "exclude": ["node_modules"],
-  // "include": ["**/*.ts", "**/*.tsx", "**/*.js"]
-  "include": ["electron/**/*"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js"]
+  // "include": ["electron/**/*"]
 }

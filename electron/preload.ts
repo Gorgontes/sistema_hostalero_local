@@ -1,5 +1,5 @@
 import { ipcRenderer, contextBridge } from 'electron';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
 declare global {
   interface Window {
@@ -14,7 +14,8 @@ const api = {
       return ipcRenderer.sendSync('createUser', user);
     },
     getUsers: async () => {
-      return ipcRenderer.sendSync('getUsers');
+      console.log('getUsers');
+      return ipcRenderer.sendSync('getUsers') as User[];
     },
   },
   sendMessage: (message: string) => {

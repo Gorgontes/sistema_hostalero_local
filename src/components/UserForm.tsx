@@ -1,15 +1,25 @@
 import { FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { MouseEvent, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { postUser } from '../api/User';
 
 type Props = {}
 
 const UserForm = (props: Props) => {
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const mutation = useMutation(postUser, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users'])
+    }
+  })
   const addUser = (event: MouseEvent) => {
-    window.Main.users.createUser({email, name: username})
-    console.log(`email: ${email}; username: ${username}`)
+    mutation.mutate({
+      email,
+      name: username
+    })
   }
   return (
     <FormControl>
