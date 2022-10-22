@@ -14,7 +14,6 @@ const api = {
       return ipcRenderer.sendSync('createUser', user);
     },
     getUsers: async () => {
-      console.log('getUsers');
       return ipcRenderer.sendSync('getUsers') as User[];
     },
   },

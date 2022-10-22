@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './assets/css/index.css';
-import './assets/css/tailwind.css';
+import './styles/index.scss';
+import './styles/tailwind.css';
 
 // chakra
 import { ChakraProvider } from '@chakra-ui/react';

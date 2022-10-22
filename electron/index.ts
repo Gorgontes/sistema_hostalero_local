@@ -82,7 +82,5 @@ ipcMain.on(
 
 ipcMain.on('getUsers', async(event: IpcMainEvent) => {
   const users = await prisma.user.findMany();
-  console.log('users');
-  console.log(users);
   event.returnValue = users;
 });
