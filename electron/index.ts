@@ -2,7 +2,7 @@
 import { join } from 'path';
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron';
+import { BrowserWindow, app, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
 import isDev from 'electron-is-dev';
 
 //prisma
@@ -68,19 +68,19 @@ app.on('window-all-closed', () => {
 
 // listen the channel `message` and resend the received message to the renderer process
 
-ipcMain.on(
+ipcMain.handle(
   'createUser',
-  async (event: IpcMainEvent, userData: Prisma.UserCreateInput) => {
+  async (event: IpcMainInvokeEvent, userData: Prisma.UserCreateInput) => {
     // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
     const newUser = await prisma.user.create({
       data: userData,
     })
     console.log(`se creo el usuario: ${newUser.id} con ${newUser.name}`);
-    event.returnValue = newUser;
+    return true;
   }
 );
 
-ipcMain.on('getUsers', async(event: IpcMainEvent) => {
+ipcMain.handle('getUsers', async(event: IpcMainInvokeEvent) => {
   const users = await prisma.user.findMany();
-  event.returnValue = users;
+  return users
 });

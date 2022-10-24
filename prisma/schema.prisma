@@ -15,3 +15,40 @@ model User {
   email String @unique
   name String?
 }
+
+model Cliente {
+  id Int @id @default(autoincrement())
+  nombres String
+  apellidoPaterno String?
+  apellidoMaterno String?
+  tipoDocumento Int
+  numeroDocumento Int
+  reservas Reserva[]
+}
+
+model Reserva {
+  id Int @id @default(autoincrement())
+  precio Int 
+  fechaIngreso DateTime?
+  fechaSalida DateTime?
+  habitacion Habitacion @relation(fields: [habitacionId], references: [id])
+  habitacionId Int
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+  clienteId Int
+}
+
+model Habitacion {
+  id Int @id @default(autoincrement())
+  piso HabitacionPiso @relation(fields: [pisoId], references: [id])
+  pisoId Int
+  detalles String
+  estado Int
+  reservas Reserva[]
+}
+
+model HabitacionPiso {
+  habitaciones Habitacion[]
+  id Int @id @default(autoincrement())
+  detalles String?
+  numeroPiso Int
+}

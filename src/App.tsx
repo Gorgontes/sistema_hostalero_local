@@ -1,13 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import UsersList from './components/UsersList'
-import UserForm from './components/UserForm'
+import { RouterProvider } from 'react-router-dom'
+import router from './router'
 
 function App() {
   return (
-    <div className="App ">
-      <UserForm />
-      <UsersList />
+    <div className='flex h-full'>
+      <div className='w-60 flex-shrink-0'>
+        this is the submenu bitch!!!!
+      </div>
+      <div className='w-full h-full'>
+        <div>Upbar</div>
+        <div className='p-4'>
+          {/* <UserForm />
+          <UsersList /> */}
+          <RouterProvider router={router}/>
+        </div>
+      </div>
     </div>
   )
 }
