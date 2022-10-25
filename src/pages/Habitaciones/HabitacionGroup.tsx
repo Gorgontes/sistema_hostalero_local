@@ -6,7 +6,7 @@ export interface Props {
   title: string;
 }
 
-const RoomGroup: React.FC<Props> = (props: Props) => {
+const HabitacionGroup: React.FC<Props> = (props: Props) => {
   let i = 0;
   const [rooms, setRooms] = useState<any[]>([]);
   return (
@@ -42,4 +42,4 @@ const RoomGroup: React.FC<Props> = (props: Props) => {
   )
 }
 
-export default RoomGroup
+export default HabitacionGroup

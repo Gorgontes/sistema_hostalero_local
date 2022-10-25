@@ -7,9 +7,9 @@ function App() {
       <div className='w-60 flex-shrink-0'>
         this is the submenu bitch!!!!
       </div>
-      <div className='w-full h-full'>
+      <div className='w-full h-full flex flex-col'>
         <div>Upbar</div>
-        <div className='p-4'>
+        <div className='grow p-4'>
           {/* <UserForm />
           <UsersList /> */}
           <RouterProvider router={router}/>

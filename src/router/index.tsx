@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom"
-import RoomPage from "../pages/Room"
+import HabitacionesPage from "../pages/Habitaciones"
 export default createBrowserRouter([
   {
     path: "/",
-    element: <RoomPage/>
+    element: <HabitacionesPage/>
   }
 ])

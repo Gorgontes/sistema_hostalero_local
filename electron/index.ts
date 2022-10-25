@@ -2,7 +2,7 @@
 import { join } from 'path';
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
+import { BrowserWindow, app, ipcMain, IpcMainInvokeEvent } from 'electron';
 import isDev from 'electron-is-dev';
 
 //prisma
@@ -21,7 +21,7 @@ function createWindow() {
     resizable: true,
     fullscreenable: true,
     webPreferences: {
-      preload: join(__dirname, 'preload.js')
+      preload: join(__dirname, 'preload.js'),
     }
   });
 
@@ -70,7 +70,7 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle(
   'createUser',
-  async (event: IpcMainInvokeEvent, userData: Prisma.UserCreateInput) => {
+  async (_: IpcMainInvokeEvent, userData: Prisma.UserCreateInput) => {
     // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
     const newUser = await prisma.user.create({
       data: userData,
@@ -80,7 +80,30 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle('getUsers', async(event: IpcMainInvokeEvent) => {
-  const users = await prisma.user.findMany();
-  return users
+ipcMain.handle('getUsers', async() => {
+  return prisma.user.findMany();
 });
+
+
+ipcMain.handle('fetchHabitaciones',async () => {
+  return prisma.habitacion.findMany();
+})
+
+ipcMain.handle('postHabitacion',async (_, habitacion: Prisma.HabitacionCreateInput) => {
+  return prisma.habitacion.create({
+    data: habitacion,
+    select: {
+      id: true
+    }
+  });
+})
+
+ipcMain.handle('postPiso', async (_, piso: Prisma.HabitacionPisoCreateInput) => {
+  return prisma.habitacionPiso.create({
+    data: piso,
+    select: {
+      id: true
+    }
+  })
+})
+

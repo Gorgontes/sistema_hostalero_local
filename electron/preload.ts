@@ -9,17 +9,30 @@ declare global {
 }
 
 const api = {
-  users: {
-    createUser: async (user: Prisma.UserCreateInput) => {
-      return ipcRenderer.invoke('createUser', user);
+  db: {
+    users: {
+      createUser: async (user: Prisma.UserCreateInput) => {
+        return ipcRenderer.invoke('createUser', user);
+      },
+      getUsers: async () => {
+        return ipcRenderer.invoke('getUsers');
+      },
     },
-    getUsers: async () => {
-      return ipcRenderer.invoke('getUsers');
+    habitaciones: {
+      fetchHabitaciones: async () => {
+        return ipcRenderer.invoke('fetchHabitaciones');
+      },
+      postHabitacion: async (habitacion: Prisma.HabitacionCreateInput) => {
+        return ipcRenderer.invoke('postHabitacion', habitacion);
+      },
     },
+    pisos: {
+      postPiso: async (piso: Prisma.HabitacionPisoCreateInput) => {
+        return ipcRenderer.invoke('postPiso', piso);
+      }
+    }
   },
-  /**
-    Here function for AppBar
-   */
+
   Minimize: () => {
     ipcRenderer.send('minimize');
   },
@@ -29,9 +42,7 @@ const api = {
   Close: () => {
     ipcRenderer.send('close');
   },
-  /**
-   * Provide an easier way to listen to events
-   */
+  
   on: (channel: string, callback: (data: any) => void) => {
     ipcRenderer.on(channel, (_, data) => callback(data));
   }
