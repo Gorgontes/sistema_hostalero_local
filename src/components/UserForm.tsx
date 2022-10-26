@@ -10,6 +10,7 @@ const UserForm = (props: Props) => {
   const queryClient = useQueryClient();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+
   const mutation = useMutation(postUser, {
     onSuccess: () => {
       queryClient.invalidateQueries(['users'])

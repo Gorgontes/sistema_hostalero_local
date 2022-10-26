@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,44 +8,45 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String?
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
 }
 
 model Cliente {
-  id Int @id @default(autoincrement())
-  nombres String
+  id              Int       @id @default(autoincrement())
+  nombres         String
   apellidoPaterno String?
   apellidoMaterno String?
-  tipoDocumento Int
+  tipoDocumento   Int
   numeroDocumento Int
-  reservas Reserva[]
+  reservas        Reserva[]
 }
 
 model Reserva {
-  id Int @id @default(autoincrement())
-  precio Int 
+  id           Int        @id @default(autoincrement())
+  precio       Int
   fechaIngreso DateTime?
-  fechaSalida DateTime?
-  habitacion Habitacion @relation(fields: [habitacionId], references: [id])
+  fechaSalida  DateTime?
   habitacionId Int
-  cliente Cliente @relation(fields: [clienteId], references: [id])
-  clienteId Int
+  clienteId    Int
+  cliente      Cliente    @relation(fields: [clienteId], references: [id])
+  habitacion   Habitacion @relation(fields: [habitacionId], references: [id])
 }
 
 model Habitacion {
-  id Int @id @default(autoincrement())
-  piso HabitacionPiso @relation(fields: [pisoId], references: [id])
-  pisoId Int
-  detalles String
-  estado Int
-  reservas Reserva[]
+  id               Int            @id @default(autoincrement())
+  pisoId           Int
+  detalles         String?
+  estado           Int?
+  numeroHabitacion Int            @unique
+  piso             HabitacionPiso @relation(fields: [pisoId], references: [id], onDelete: Cascade)
+  reservas         Reserva[]
 }
 
 model HabitacionPiso {
+  id           Int          @id @default(autoincrement())
+  detalles     String?
+  numeroPiso   Int          @unique
   habitaciones Habitacion[]
-  id Int @id @default(autoincrement())
-  detalles String?
-  numeroPiso Int
 }

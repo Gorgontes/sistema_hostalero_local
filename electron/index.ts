@@ -85,8 +85,14 @@ ipcMain.handle('getUsers', async() => {
 });
 
 
-ipcMain.handle('fetchHabitaciones',async () => {
-  return prisma.habitacion.findMany();
+ipcMain.handle('fetchHabitaciones',async (_, id?: number) => {
+  if(id == null)
+    return prisma.habitacion.findMany();
+  return prisma.habitacion.findMany({
+    where: {
+      id: id
+    }
+  })
 })
 
 ipcMain.handle('postHabitacion',async (_, habitacion: Prisma.HabitacionCreateInput) => {
@@ -107,3 +113,18 @@ ipcMain.handle('postPiso', async (_, piso: Prisma.HabitacionPisoCreateInput) => 
   })
 })
 
+ipcMain.handle('fetchPisosAndHabitaciones', async () => {
+  return prisma.habitacionPiso.findMany({
+    include: {
+      habitaciones: true
+    }
+  })
+})
+
+
+ipcMain.handle('deletePisoById', async (_, id: number) => {
+  return prisma.habitacionPiso.delete({
+    where: { id },
+    select: { id: true }
+  });
+})
