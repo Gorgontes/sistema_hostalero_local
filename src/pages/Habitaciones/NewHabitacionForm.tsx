@@ -29,7 +29,7 @@ const NewHabitacionForm: React.FC<Props> = ({ isOpen, onClose, pisoId }) => {
   const [detallesHabitacion, setDetallesHabitacion] = useState('');
   const mutation = useMutation(postHabitaciones, {
     onSuccess: () =>  {
-      queryClient.invalidateQueries([`piso${pisoId}`]);
+      queryClient.invalidateQueries(['piso', pisoId]);
     }
   })
   const createHabitacion = () => {

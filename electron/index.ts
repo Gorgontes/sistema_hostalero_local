@@ -90,7 +90,9 @@ ipcMain.handle('fetchHabitaciones',async (_, id?: number) => {
     return prisma.habitacion.findMany();
   return prisma.habitacion.findMany({
     where: {
-      id: id
+      pisoId: {
+        equals: id
+      }
     }
   })
 })

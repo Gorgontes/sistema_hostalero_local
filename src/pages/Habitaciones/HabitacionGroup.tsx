@@ -1,5 +1,5 @@
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Box, Center, IconButton, useDisclosure } from "@chakra-ui/react";
+import { Box, Center, Divider, IconButton, useDisclosure } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import {
@@ -16,25 +16,36 @@ interface Props {
 const HabitacionGroup: React.FC<Props> = ({ piso }) => {
   // const [habitaciones, setHabitaciones] = useState(piso.habitaciones)
   const {isOpen, onClose, onOpen} = useDisclosure();
-  const { data: habitaciones } = useQuery(
-    [`piso${piso.id}`],
-    fetchHabitaciones,
-    { initialData: piso.habitaciones }
+  const { data: habitaciones, isLoading } = useQuery(
+    ['piso', piso.id],
+    () => fetchHabitaciones(piso.id),
+    {
+      initialData: piso.habitaciones,
+      refetchOnMount: false
+    }
   );
+  console.log(piso.habitaciones);
+  console.log(habitaciones)
   const queryClient = useQueryClient();
   const deletePiso = useMutation(deletePisoById, {
     onSuccess: () => {
       queryClient.invalidateQueries(["habitaciones"]);
     },
   });
+  if (isLoading) {
+    console.log('loading');
+    return (<div>cargando...</div>)
+  }
+
   return (
     <div className="px-4 py-1 w-full bg-gray-400 rounded-lg">
       <div>{piso.numeroPiso}</div>
       <div className="flex items-center">
         <div className="flex space-x-4 items-center">
-          {habitaciones.map((habitacion) => {
+          {habitaciones!.map((habitacion) => {
+            console.log('render');
             return (
-              <Center className="h-9 w-16 rounded-lg bg-cyan-500">
+              <Center className="h-9 w-16 rounded-lg bg-cyan-500" key={habitacion.id}>
                 {habitacion.numeroHabitacion}
               </Center>
             );

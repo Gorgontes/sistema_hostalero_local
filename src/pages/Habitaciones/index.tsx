@@ -1,17 +1,16 @@
 import { AddIcon } from '@chakra-ui/icons'
-import { Button, FormControl, FormLabel, Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, useDisclosure } from '@chakra-ui/react'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { fetchHabitaciones, fetchPisosAndHab, postPiso } from '../../api/Habitacion'
+import { Button, Heading, useDisclosure } from '@chakra-ui/react'
+import { useQuery } from '@tanstack/react-query'
+import { fetchPisosAndHab } from '../../api/Habitacion'
 import HabitacionGroup from './HabitacionGroup'
 import NewPisoForm from './NewPisoForm'
 
 type Props = {}
 
 const HabitacionesPage = (props: Props) => {
-  const { data, isLoading, isFetched, } = useQuery(['habitaciones'], fetchPisosAndHab);
+  const { data, isLoading, isFetched, status} = useQuery(['habitaciones'], fetchPisosAndHab);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  console.log('->',status)
 
   if(isFetched || !isLoading)
     console.log('data', data);

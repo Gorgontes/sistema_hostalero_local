@@ -1,7 +1,8 @@
 import { Habitacion, Prisma } from "@prisma/client";
 
-export async function fetchHabitaciones(): Promise<Habitacion[]> {
-  return window.Main.db.habitaciones.fetchHabitaciones();
+export async function fetchHabitaciones(id?: number): Promise<Habitacion[]> {
+  console.log('fetchhabitaciones', id)
+  return window.Main.db.habitaciones.fetchHabitaciones(id);
 }
 
 export async function postHabitaciones(habitacion: Prisma.HabitacionCreateInput) {
