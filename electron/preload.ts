@@ -42,6 +42,9 @@ const api = {
       deletePisoById: async (id: number) => {
         return ipcRenderer.invoke("deletePisoById", id);
       },
+      fetchPisoById:async (id: number) => {
+        return ipcRenderer.invoke("fetchPisoById", id);
+      }
     },
   },
 

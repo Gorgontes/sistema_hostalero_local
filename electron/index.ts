@@ -130,3 +130,12 @@ ipcMain.handle('deletePisoById', async (_, id: number) => {
     select: { id: true }
   });
 })
+
+ipcMain.handle('fetchPisoById', async (_, id:number) => {
+  return prisma.habitacionPiso.findFirst({
+    where: { id },
+    include: {
+      habitaciones: true
+    }
+  })
+})
