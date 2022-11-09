@@ -9,8 +9,8 @@ import isDev from 'electron-is-dev';
 import { PrismaClient, Prisma } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const height = 600;
-const width = 800;
+const height = 920;
+const width = 1080;
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -80,13 +80,13 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle('getUsers', async() => {
+ipcMain.handle('getUsers', async () => {
   return prisma.user.findMany();
 });
 
 
-ipcMain.handle('fetchHabitaciones',async (_, id?: number) => {
-  if(id == null)
+ipcMain.handle('fetchHabitaciones', async (_, id?: number) => {
+  if (id == null)
     return prisma.habitacion.findMany();
   return prisma.habitacion.findMany({
     where: {
@@ -97,7 +97,7 @@ ipcMain.handle('fetchHabitaciones',async (_, id?: number) => {
   })
 })
 
-ipcMain.handle('postHabitacion',async (_, habitacion: Prisma.HabitacionCreateInput) => {
+ipcMain.handle('postHabitacion', async (_, habitacion: Prisma.HabitacionCreateInput) => {
   return prisma.habitacion.create({
     data: habitacion,
     select: {
@@ -131,7 +131,7 @@ ipcMain.handle('deletePisoById', async (_, id: number) => {
   });
 })
 
-ipcMain.handle('fetchPisoById', async (_, id:number) => {
+ipcMain.handle('fetchPisoById', async (_, id: number) => {
   return prisma.habitacionPiso.findFirst({
     where: { id },
     include: {
