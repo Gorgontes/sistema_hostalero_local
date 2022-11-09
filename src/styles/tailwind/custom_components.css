@@ -1,0 +1,6 @@
+
+@layer components {
+  .habitacion-card {
+    @apply text-4xl font-bold text-primario py-4 px-8 bg-white w-fit rounded-lg border-primario border-4;
+  }
+}
