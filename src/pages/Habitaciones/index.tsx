@@ -40,7 +40,7 @@ const HabitacionesPage = (props: Props) => {
           </InputGroup>
         </div>
         <div className="outline grow h-0">
-          <HabitacionCard name="101"/>
+          <HabitacionCard nombre="101" estado="reservada"/>
         </div>
       </div>
       <div >

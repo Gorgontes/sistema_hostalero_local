@@ -11,7 +11,8 @@ import {
 import NewHabitacionForm from "./NewHabitacionForm";
 
 interface Props {
-  piso: Awaited<ReturnType<typeof fetchPisoById>>;
+  // piso: Awaited<ReturnType<typeof fetchPisoById>>;
+  piso: Awaited< ReturnType< typeof fetchPisoById > >;
 }
 
 const HabitacionGroup: React.FC<Props> = (props) => {
