@@ -1,5 +1,5 @@
 import React from "react";
-import TextButtonDropButton from "../TextButtonDropDown/TextButtonDropDown";
+import TextButtonDropButton from "../ButtonDropDown/ButtonDropDown";
 
 
 // type Estado = 'ocupada' | 'libre' | 'reservada';
@@ -9,6 +9,11 @@ type Props = {
     // nombre: string
 }
 
+const datae = [
+    "asdasd",
+    "asdasd",
+    "asdasd"
+]
 
 const NavBarHome = (props: Props) => {
     return (
@@ -17,8 +22,21 @@ const NavBarHome = (props: Props) => {
             console.log("montes es mi perra")
         }}>
 
-            <TextButtonDropButton title={"asd"} value={123} />
-        </div>
+            <TextButtonDropButton title={"asd"} value={123} >
+                {
+
+                    datae.map((text) => {
+                        return (<a key={text}> {text} </a>)
+                    })
+                }
+
+            </TextButtonDropButton>
+            <TextButtonDropButton title={"asd"} value={123} >
+                <a> asdlkj </a>
+                <a> abcde </a>
+                <a> asdlkj </a>
+            </TextButtonDropButton>
+        </div >
     )
 }
 
