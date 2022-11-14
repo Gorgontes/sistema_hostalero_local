@@ -1,29 +1,55 @@
 import React from "react";
+import ItemDropButton from "../ItemDropDown/ItemDropDown";
 import './style.css'
 type Props = {
-    title: String,
-    value: number,
-    children?: JSX.Element | JSX.Element[];
-    // links: [
-
-    // ]
+    label: string,
+    items: Array<{
+        label: string,
+        url: string
+    }>
 }
 
-const TextButtonDropButton = ({ title, value, children }: Props) => {
+const ButtonDropDown = (props: Props) => {
 
     return (
-        <>
-            <div className="dropdown">
-                <button className="dropbtn">Dropdown</button>
-                <div className="dropdown-content">
-                    {children}
-                    {/* <a href="#">Link 1</a>
-                    <a href="#">Link 2</a>
-                    <a href="#">Link 3</a> */}
-                </div>
+        <div className="dropdown relative inline-block">
+            <button className="dropbtn hover:bg-background_main hover:text-primario text-background_main py-2 px-5 text-sm">
+                {props.label}
+            </button>
+            <div className="hidden dropdown-content bg-background_main border-b-2 border-primario rounded-b-lg shadow-lg text-primario">
+                {
+                    props.items.map((json, index) => {
+                        return (
+                            <ItemDropButton
+                                key={index}
+                                label={json.label}
+                                url={json.url}
+                            />
+                        )
+                    })
+                }
             </div>
-        </>
+        </div>
     )
 }
 
-export default TextButtonDropButton
+export default ButtonDropDown
+
+
+
+
+
+
+
+
+///
+// type Props = {
+//     title: String,
+//     value: number,
+//     children?: JSX.Element | JSX.Element[];
+//     // links: [
+
+//     // ]
+// }
+
+// const ButtonDropDown = ({ title, value, children }: Props) => {

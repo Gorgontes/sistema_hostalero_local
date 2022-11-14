@@ -1,41 +1,95 @@
+import { background } from "@chakra-ui/react";
 import React from "react";
-import TextButtonDropButton from "../ButtonDropDown/ButtonDropDown";
-
-
-// type Estado = 'ocupada' | 'libre' | 'reservada';
+import ButtonDropDown from "../ButtonDropDown/ButtonDropDown";
 
 type Props = {
     // estado: Estado,
     // nombre: string
 }
 
-const datae = [
-    "asdasd",
-    "asdasd",
-    "asdasd"
-]
+const opciones = {
+    "label": "Opciones",
+    "items": [
+        {
+            "label": "Habitaciones",
+            "url": "---"
+        },
+        {
+            "label": "Inventario",
+            "url": "---"
+        },
+        {
+            "label": "Configurar Hotel",
+            "url": "---"
+        },
+        {
+            "label": "Salir",
+            "url": "---"
+        }
+    ]
+}
+const caja = {
+    "label": "Caja",
+    "items": [
+        {
+            "label": "cajita 1",
+            "url": "---"
+        },
+        {
+            "label": "cajita 2",
+            "url": "---"
+        }
+
+    ]
+}
+const configuracion = {
+    "label": "Configuracion",
+    "items": [
+        {
+            "label": "confi",
+            "url": "---"
+        },
+        {
+            "label": "confi 2",
+            "url": "---"
+        },
+        {
+            "label": "confi 4",
+            "url": "---"
+        },
+        {
+            "label": "confi 5",
+            "url": "---"
+        }
+    ]
+}
+const historial = {
+    "label": "Historial",
+    "items": [
+        {
+            "label": "historita",
+            "url": "---"
+        }
+    ]
+}
+const acerca = {
+    "label": "Acerca",
+    "items": [
+        {
+            "label": "ver acerca",
+            "url": "---"
+        }
+    ]
+}
 
 const NavBarHome = (props: Props) => {
     return (
-        // <span className="bg-red-200">asdasdasd</span>
-        <div className="bg-red-400" onClick={() => {
-            console.log("montes es mi perra")
-        }}>
-
-            <TextButtonDropButton title={"asd"} value={123} >
-                {
-
-                    datae.map((text) => {
-                        return (<a key={text}> {text} </a>)
-                    })
-                }
-
-            </TextButtonDropButton>
-            <TextButtonDropButton title={"asd"} value={123} >
-                <a> asdlkj </a>
-                <a> abcde </a>
-                <a> asdlkj </a>
-            </TextButtonDropButton>
+        <div className="bg-primario " >
+            <ButtonDropDown {...opciones} />
+            <ButtonDropDown {...caja} />
+            <ButtonDropDown {...configuracion} />
+            <ButtonDropDown {...historial} />
+            <ButtonDropDown {...acerca} />
         </div >
     )
 }
