@@ -1,32 +1,32 @@
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Button, Center, IconButton, useDisclosure } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   deletePisoById,
   fetchHabitaciones,
   fetchPisoById,
   fetchPisosAndHab,
 } from "../../api/Habitacion";
-import NewHabitacionForm from "./NewHabitacionForm";
+import HabitacionCard from "../../components/HabitacionCard";
 
 interface Props {
-  // piso: Awaited<ReturnType<typeof fetchPisoById>>;
-  piso: Awaited< ReturnType< typeof fetchPisoById > >;
+  piso: Awaited<ReturnType<typeof fetchPisoById>>;
 }
 
 const HabitacionGroup: React.FC<Props> = (props) => {
   const queryClient = useQueryClient();
-  const {isOpen, onClose, onOpen} = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const { data: piso, isLoading } = useQuery(
-    ['piso', props.piso.id],
+  const { data: piso, isLoading, isError } = useQuery(
+    ["piso", props.piso.id],
     () => fetchPisoById(props.piso.id),
     {
       initialData: props.piso,
-      refetchOnMount: false
+      refetchOnMount: false,
     }
   );
+
   const deletePiso = useMutation(deletePisoById, {
     onSuccess: () => {
       queryClient.invalidateQueries(["habitaciones"]);
@@ -34,42 +34,32 @@ const HabitacionGroup: React.FC<Props> = (props) => {
   });
 
   if (isLoading) {
-    console.log('loading');
-    return (<div>cargando...</div>)
+    return <div>cargando...</div>;
+  }
+
+  if (isError) {
+    return <div>hubo un error!!!</div>;
   }
 
   return (
-    <div className="px-4 py-1 w-full bg-gray-300 rounded-lg border-2 shadow-lg">
-      <div>Piso {piso.numeroPiso}
-          <Button
-            className="ml-5"
-            aria-label="Agregar habitacion"
-            colorScheme="teal"
-            onClick={onOpen}
-            size="sm"
-          >Agregar habitacion</Button>
+    <div className="outline-primario outline rounded-lg p-0 block">
+      <div className="bg-primario text-white text-3xl p-3 rounded-md">
+        Piso: {piso.numeroPiso}
       </div>
-      <div className="flex items-center">
-        <div className="flex items-center flex-wrap">
-          {piso.habitaciones!.map((habitacion) => {
-            return (
-              <div className="px-2 py-1" key={habitacion.id}>
-                <Center className="h-9 w-16 rounded-lg bg-cyan-500">
-                  {habitacion.numeroHabitacion}
-                </Center>
-              </div>
-            );
-          })}
+      <div className="p-4">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-4">
+          {piso.habitaciones.map((hab, index) => (
+            <HabitacionCard
+              nombre={hab.numeroHabitacion.toString()}
+              estado={index % 2 ? 'ocupada': 'libre' }
+              key={hab.id}
+            />
+          ))}
         </div>
-        <IconButton
-          className="ml-auto"
-          aria-label="Eliminar piso"
-          icon={<DeleteIcon />}
-          onClick={() => deletePiso.mutate(piso.id)}
-          colorScheme="red"
-        />
+        <Button colorScheme="green" leftIcon={<AddIcon />} className={'mt-4'}>
+          Agregar habitacion
+        </Button>
       </div>
-      <NewHabitacionForm isOpen={isOpen} onClose={onClose} piso={piso} />
     </div>
   );
 };
