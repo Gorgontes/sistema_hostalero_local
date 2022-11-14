@@ -1,22 +1,28 @@
-import React from 'react'
-type Estado = 'ocupada' | 'libre' | 'reservada';
+import cntl from "cntl";
+type Estado = "ocupada" | "libre" | "reservada";
 
 type Props = {
-  estado: Estado,
-  nombre: string
-}
-function habitacionStyle(estado: Estado) {
-  switch(estado) {
-    case 'ocupada': return 'habitacion-card--ocupada';
-    case 'libre': return 'habitacion-card--libre';
-    case 'reservada': return 'habitacion-card--reservada';
-  }
-}
+  estado: Estado;
+  nombre: string;
+  onClick?: () => void;
+};
+
+const styleEstado = {
+  libre: cntl`text-primario bg-white border-primario border-4`,
+  ocupada: cntl`text-white bg-primario border-primario border-4`,
+  reservada: cntl`text-white bg-morado`,
+};
 
 const HabitacionCard = (props: Props) => {
   return (
-    <div className={`habitacion-card ${habitacionStyle(props.estado)}`}>{props.nombre}</div>
-  )
-}
+    <div
+      className={`text-4xl font-bold py-4 px-8 w-fit rounded-lg ${styleEstado[props.estado]
+        }`}
+      onClick={props.onClick}
+    >
+      {props.nombre}
+    </div>
+  );
+};
 
-export default HabitacionCard
+export default HabitacionCard;

@@ -1,12 +1,15 @@
 // Native
-import { join } from 'path';
+import { join } from "path";
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainInvokeEvent } from 'electron';
-import isDev from 'electron-is-dev';
+import { BrowserWindow, app, ipcMain, IpcMainInvokeEvent } from "electron";
+import isDev from "electron-is-dev";
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+} from "electron-devtools-installer";
 
-//prisma
-import { PrismaClient, Prisma } from '@prisma/client';
+// Prisma
+import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const height = 920;
@@ -16,34 +19,38 @@ function createWindow() {
   const window = new BrowserWindow({
     width,
     height,
-    // frame: false,
     show: true,
     resizable: true,
     fullscreenable: true,
     webPreferences: {
-      preload: join(__dirname, 'preload.js'),
-    }
+      preload: join(__dirname, "preload.js"),
+    },
   });
 
   const port = process.env.PORT || 3000;
-  const url = isDev ? `http://localhost:${port}` : join(__dirname, '../src/out/index.html');
+  const url = isDev
+    ? `http://localhost:${port}`
+    : join(__dirname, "../src/out/index.html");
 
   if (isDev) {
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then((name) => console.log(`la extension ${name} fue instalada`))
+      .catch((e) => console.error(`hubo un error: ${e}`));
     window?.loadURL(url);
   } else {
     window?.loadFile(url);
   }
 
   // For AppBar
-  ipcMain.on('minimize', () => {
+  ipcMain.on("minimize", () => {
     window.isMinimized() ? window.restore() : window.minimize();
     // or alternatively: win.isVisible() ? win.hide() : win.show()
   });
-  ipcMain.on('maximize', () => {
+  ipcMain.on("maximize", () => {
     window.isMaximized() ? window.restore() : window.maximize();
   });
 
-  ipcMain.on('close', () => {
+  ipcMain.on("close", () => {
     window.close();
   });
 }
@@ -52,15 +59,16 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  console.log(`el id de la extension es: ${REACT_DEVELOPER_TOOLS.id}`)
   createWindow();
 
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
 });
 
 // In this file you can include the rest of your app's specific main process
@@ -69,73 +77,76 @@ app.on('window-all-closed', () => {
 // listen the channel `message` and resend the received message to the renderer process
 
 ipcMain.handle(
-  'createUser',
+  "createUser",
   async (_: IpcMainInvokeEvent, userData: Prisma.UserCreateInput) => {
     // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
     const newUser = await prisma.user.create({
       data: userData,
-    })
+    });
     console.log(`se creo el usuario: ${newUser.id} con ${newUser.name}`);
     return true;
   }
 );
 
-ipcMain.handle('getUsers', async () => {
+ipcMain.handle("getUsers", async () => {
   return prisma.user.findMany();
 });
 
-
-ipcMain.handle('fetchHabitaciones', async (_, id?: number) => {
-  if (id == null)
-    return prisma.habitacion.findMany();
+ipcMain.handle("fetchHabitaciones", async (_, id?: number) => {
+  if (id == null) return prisma.habitacion.findMany();
   return prisma.habitacion.findMany({
     where: {
       pisoId: {
-        equals: id
-      }
-    }
-  })
-})
-
-ipcMain.handle('postHabitacion', async (_, habitacion: Prisma.HabitacionCreateInput) => {
-  return prisma.habitacion.create({
-    data: habitacion,
-    select: {
-      id: true
-    }
+        equals: id,
+      },
+    },
   });
-})
+});
 
-ipcMain.handle('postPiso', async (_, piso: Prisma.HabitacionPisoCreateInput) => {
-  return prisma.habitacionPiso.create({
-    data: piso,
-    select: {
-      id: true
-    }
-  })
-})
+ipcMain.handle(
+  "postHabitacion",
+  async (_, habitacion: Prisma.HabitacionCreateInput) => {
+    return prisma.habitacion.create({
+      data: habitacion,
+      select: {
+        id: true,
+      },
+    });
+  }
+);
 
-ipcMain.handle('fetchPisosAndHabitaciones', async () => {
+ipcMain.handle(
+  "postPiso",
+  async (_, piso: Prisma.HabitacionPisoCreateInput) => {
+    return prisma.habitacionPiso.create({
+      data: piso,
+      select: {
+        id: true,
+      },
+    });
+  }
+);
+
+ipcMain.handle("fetchPisosAndHabitaciones", async () => {
   return prisma.habitacionPiso.findMany({
     include: {
-      habitaciones: true
-    }
-  })
-})
+      habitaciones: true,
+    },
+  });
+});
 
-
-ipcMain.handle('deletePisoById', async (_, id: number) => {
+ipcMain.handle("deletePisoById", async (_, id: number) => {
   return prisma.habitacionPiso.delete({
     where: { id },
-    select: { id: true }
+    select: { id: true },
   });
-})
+});
 
-ipcMain.handle('fetchPisoById', async (_, id: number) => {
+ipcMain.handle("fetchPisoById", async (_, id: number) => {
   return prisma.habitacionPiso.findFirst({
     where: { id },
     include: {
-      habitaciones: true
-    }
-  })
-})
+      habitaciones: true,
+    },
+  });
+});
