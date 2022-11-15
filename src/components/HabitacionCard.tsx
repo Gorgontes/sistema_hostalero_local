@@ -17,9 +17,8 @@ const styleEstado = {
 const HabitacionCard = (props: Props) => {
   return (
     <div
-      className={`text-4xl font-bold py-4 px-8 w-fit rounded-lg ${
-        styleEstado[props.estado]
-      }`}
+      className={`text-4xl font-bold py-4 px-8 w-fit rounded-lg ${styleEstado[props.estado]
+        }`}
       onClick={props.onClick}
     >
       {props.nombre}

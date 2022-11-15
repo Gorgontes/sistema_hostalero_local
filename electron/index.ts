@@ -12,8 +12,8 @@ import installExtension, {
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const height = 600;
-const width = 800;
+const height = 920;
+const width = 1080;
 
 function createWindow() {
   const window = new BrowserWindow({

@@ -10,6 +10,7 @@ module.exports = {
         'verde': '#33AC74',
         'rojo': '#B11810',
         'naranja': '#F49215',
+        'background_main': '#F3F3F3',
       }
     },
   },
