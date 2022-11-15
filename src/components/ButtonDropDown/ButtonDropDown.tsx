@@ -14,9 +14,9 @@ const ButtonDropDown = (props: Props) => {
     const [isHover, setIsHover] = useState(false);
 
     return (
-        <div className="dropdown relative inline-block">
+        <div className="relative inline-block">
             <button
-                className="dropbtn hover:bg-background_main hover:text-primario text-background_main py-2 px-5 text-sm"
+                className="hover:bg-background_main hover:text-primario text-background_main py-2 px-5 text-sm"
                 onMouseEnter={() => {
                     setIsHover(true);
                 }}

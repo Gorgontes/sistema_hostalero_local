@@ -11,6 +11,9 @@ module.exports = {
         'rojo': '#B11810',
         'naranja': '#F49215',
         'background_main': '#F3F3F3',
+
+        'rojo_suave': '#E94444',
+        'amarillo_suave': '#FFCF23',
       }
     },
   },

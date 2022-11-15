@@ -1,6 +1,7 @@
 import { background } from "@chakra-ui/react";
 import React from "react";
 import ButtonDropDown from "../ButtonDropDown/ButtonDropDown";
+import ConnectionDrive from "../ConnectionDrive/ConnectionDrive";
 
 type Props = {
     // estado: Estado,
@@ -84,12 +85,13 @@ const acerca = {
 
 const NavBarHome = (props: Props) => {
     return (
-        <div className="bg-primario " >
+        <div className="bg-primario flex" >
             <ButtonDropDown {...opciones} />
             <ButtonDropDown {...caja} />
             <ButtonDropDown {...configuracion} />
             <ButtonDropDown {...historial} />
             <ButtonDropDown {...acerca} />
+            <ConnectionDrive />
         </div >
     )
 }
