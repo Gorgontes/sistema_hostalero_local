@@ -10,29 +10,33 @@ type Props = {
     }>;
 };
 
+
 const ButtonDropDown = (props: Props) => {
     const [isHover, setIsHover] = useState(false);
+
+    const _onMouseEnter = () => {
+        setIsHover(true);
+    }
+    const onMouseLeave = () => {
+        setIsHover(false);
+    }
 
     return (
         <div className="relative inline-block">
             <button
-                className="hover:bg-background_main hover:text-primario text-background_main py-2 px-5 text-sm"
-                onMouseEnter={() => {
-                    setIsHover(true);
-                }}
-                onMouseLeave={() => {
-                    setIsHover(false);
-                }}
+                className={
+                    cntl`
+                    ${isHover ? 'bg-background_main' : ''}
+                    ${isHover ? 'text-primario' : 'text-background_main'}
+                    py-2 px-5 text-sm`}
+                onMouseEnter={_onMouseEnter}
+                onMouseLeave={onMouseLeave}
             >
                 {props.label}
             </button>
             <div
-                onMouseEnter={() => {
-                    setIsHover(true);
-                }}
-                onMouseLeave={() => {
-                    setIsHover(false);
-                }}
+                onMouseEnter={_onMouseEnter}
+                onMouseLeave={onMouseLeave}
                 className={cntl`
                     absolute z-10 min-w-[160px]
                     bg-background_main border-b-[5px]
