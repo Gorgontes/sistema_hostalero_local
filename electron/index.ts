@@ -119,7 +119,7 @@ ipcMain.handle(
   "postPiso",
   async (_, piso: Prisma.HabitacionPisoCreateInput) => {
     return prisma.habitacionPiso.create({
-      data: piso,
+      data: { ...piso },
       select: {
         id: true,
       },
