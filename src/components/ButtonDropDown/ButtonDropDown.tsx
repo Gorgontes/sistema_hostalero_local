@@ -28,7 +28,7 @@ const ButtonDropDown = (props: Props) => {
                     cntl`
                     ${isHover ? 'bg-background_main' : ''}
                     ${isHover ? 'text-primario' : 'text-background_main'}
-                    py-2 px-5 text-sm`}
+                    py-2.5 px-5 text-sm`}
                 onMouseEnter={_onMouseEnter}
                 onMouseLeave={onMouseLeave}
             >
