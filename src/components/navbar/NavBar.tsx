@@ -13,7 +13,7 @@ const opciones = {
     "items": [
         {
             "label": "Habitaciones",
-            "url": "---"
+            "url": "/habitaciones"
         },
         {
             "label": "Inventario",
@@ -21,7 +21,7 @@ const opciones = {
         },
         {
             "label": "Configurar Hotel",
-            "url": "---"
+            "url": "/editar-habitaciones"
         },
         {
             "label": "Salir",

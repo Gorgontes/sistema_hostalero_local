@@ -5,7 +5,8 @@ type Estado = "ocupada" | "libre" | "reservada";
 type Props = {
   estado: Estado;
   nombre: string;
-  onClick?: () => void;
+  onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
+  className?: string;
 };
 
 const styleEstado = {
@@ -14,16 +15,16 @@ const styleEstado = {
   reservada: cntl`text-white bg-morado`,
 };
 
-const HabitacionCard = (props: Props) => {
+const HabitacionCard = ({className, estado, onClick, nombre}: Props) => {
+  const estilosAdicionales = `${styleEstado[estado]} ${className}`
   return (
     <div
-      className={`text-4xl font-bold py-4 px-8 w-fit rounded-lg ${styleEstado[props.estado]
-        }`}
-      onClick={props.onClick}
-    >
-      {props.nombre}
+      className={`text-3xl font-bold py-4 rounded-lg text-center ${estilosAdicionales}`}
+      onClick={onClick}>
+      {nombre}SSS
     </div>
   );
 };
+
 
 export default HabitacionCard;

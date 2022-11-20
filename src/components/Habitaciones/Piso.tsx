@@ -4,17 +4,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
 import {
   deletePisoById,
-  fetchHabitaciones,
   fetchPisoById,
-  fetchPisosAndHab,
 } from "../../api/Habitacion";
-import HabitacionCard from "../../components/HabitacionCard";
+import HabitacionCard from "./HabitacionCard";
 
 interface Props {
   piso: Awaited<ReturnType<typeof fetchPisoById>>;
 }
 
-const HabitacionGroup: React.FC<Props> = (props) => {
+const Piso: React.FC<Props> = (props) => {
   const queryClient = useQueryClient();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -64,4 +62,4 @@ const HabitacionGroup: React.FC<Props> = (props) => {
   );
 };
 
-export default HabitacionGroup;
+export default Piso;

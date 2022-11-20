@@ -10,10 +10,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchPisosAndHab } from "../../api/Habitacion";
-import HabitacionCard from "../../components/HabitacionCard";
-import HabitacionGroup from "./HabitacionGroup";
-import NewPisoForm from "./NewPisoForm";
+import { fetchPisosAndHab } from "../api/Habitacion";
+import HabitacionCard from "../components/Habitaciones/HabitacionCard";
+import Piso from "../components/Habitaciones/Piso";
+import NewPisoForm from "../components/Habitaciones/NewPisoForm";
 
 type Props = {};
 
@@ -47,7 +47,7 @@ const HabitacionesPage = (props: Props) => {
         </div>
         <div className="grow h-0 space-y-4">
           {habitaciones!.map((habitacion) => (
-            <HabitacionGroup piso={habitacion} key={habitacion.id}/>
+            <Piso piso={habitacion} key={habitacion.id}/>
           ))}
         </div>
       </div>

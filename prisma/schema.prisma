@@ -43,9 +43,11 @@ model Reserva {
 model Habitacion {
   id                Int            @id @default(autoincrement())
   pisoId            Int
-  detalles          String?
+  // detalles          String?
+  descripcion       String?
+  observaciones     String?
   estado            String         @default("libre")
-  numeroHabitacion  Int            @unique
+  nombreHabitacion  String
   piso              HabitacionPiso @relation(fields: [pisoId], references: [id], onDelete: Cascade)
   reservas          Reserva[]
   camas             Int            @default(1)
