@@ -11,6 +11,7 @@ import {
 import { Prisma } from "@prisma/client";
 import { Field, FieldProps, Form, Formik } from "formik";
 import { useState } from "react";
+import * as yup from 'yup';
 
 type Props = {
   callback?: (habitacion: Omit<Prisma.HabitacionCreateInput, 'piso'>) => void;
@@ -37,14 +38,29 @@ const initialValuesDefault = {
   observaciones: "",
 };
 
+const schema = yup.object().shape({
+  nombreHabitacion: yup.string().required(),
+  precioReferencial: yup.number().optional().positive(),
+  tv: yup.boolean().required(),
+  wifi: yup.boolean().required(),
+  banos: yup.number().integer().positive(),
+  camas: yup.number().integer().positive(),
+  descripcion: yup.string().optional(),
+  observaciones: yup.string().optional(),
+})
+function validate(values: InitialValues) {
+  console.log('validando');
+  return {};
+}
+
 const HabitacionForm = (props: Props) => {
-  
+  console.log('rendering');
   return (
     <Formik
       initialValues={props.initialValues ? props.initialValues : initialValuesDefault}
-      validate={}
+      validate={validate}
       onSubmit={(values, {setSubmitting}) => {
-        props.callback && props.callback(values);
+        // props.callback && props.callback(values);
         setSubmitting(false);
       }}
     >
