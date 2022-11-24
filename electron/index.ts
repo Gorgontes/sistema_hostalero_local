@@ -2,7 +2,7 @@
 import { join } from "path";
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainInvokeEvent } from "electron";
+import { BrowserWindow, app, ipcMain } from "electron";
 import isDev from "electron-is-dev";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
@@ -34,8 +34,6 @@ function createWindow() {
 
   if (isDev) {
     installExtension(REACT_DEVELOPER_TOOLS)
-      .then((name) => console.log(`la extension ${name} fue instalada`))
-      .catch((e) => console.error(`hubo un error: ${e}`));
     window?.loadURL(url);
   } else {
     window?.loadFile(url);
@@ -78,7 +76,7 @@ app.on("window-all-closed", () => {
 
 ipcMain.handle(
   "createUser",
-  async (_: IpcMainInvokeEvent, userData: Prisma.UserCreateInput) => {
+  async (_, userData: Prisma.UserCreateInput) => {
     // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
     const newUser = await prisma.user.create({
       data: userData,
