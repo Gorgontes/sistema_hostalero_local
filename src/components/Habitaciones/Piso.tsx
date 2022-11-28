@@ -48,7 +48,7 @@ const Piso: React.FC<Props> = (props) => {
         <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-4">
           {piso.habitaciones.map((hab, index) => (
             <HabitacionCard
-              nombre={hab.numeroHabitacion.toString()}
+              nombre={hab.nombreHabitacion.toString()}
               estado={index % 2 ? 'ocupada': 'libre' }
               key={hab.id}
             />

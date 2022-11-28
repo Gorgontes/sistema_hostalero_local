@@ -1,8 +1,14 @@
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Button, IconButton, useDisclosure } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useCallback } from "react";
-import { deletePisoById, fetchPisoById, postHabitaciones, postPiso } from "../../api/Habitacion";
+import React, { useCallback, useState } from "react";
+import {
+  deletePisoById,
+  fetchPisoById,
+  postHabitaciones,
+  postPiso,
+  updateHabitacion,
+} from "../../api/Habitacion";
 import HabitacionCard from "./HabitacionCard";
 import {
   Modal,
@@ -13,7 +19,7 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import HabitacionForm from "./NewHabitacionForm";
-import { Prisma } from "@prisma/client";
+import { Habitacion, Prisma } from "@prisma/client";
 
 interface Props {
   piso: Awaited<ReturnType<typeof fetchPisoById>>;
@@ -21,16 +27,20 @@ interface Props {
 
 const PisoEditor: React.FC<Props> = (props) => {
   const queryClient = useQueryClient();
-  const handleSubmitHabitacion = useCallback((
-    habitacion: Omit<Prisma.HabitacionCreateInput, "piso">
-  ) => {
-    let newHabitacion: Prisma.HabitacionCreateInput = {
-      ...habitacion,
-      piso: {connect: {id: props.piso.id}}
-    };
-    onClose();
-    createHabitacion(newHabitacion);
-  },[props.piso]);
+
+  const handleNewSubmitHabitacion = useCallback(
+    (habitacion: Omit<Prisma.HabitacionCreateInput, "piso">) => {
+      let newHabitacion: Prisma.HabitacionCreateInput = {
+        ...habitacion,
+        piso: { connect: { id: props.piso.id } },
+      };
+      onClose();
+      _createHabitacion(newHabitacion);
+    },
+    [props.piso]
+  );
+
+  const [editableHab, setEditableHab] = useState<Habitacion | null>(null);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -43,36 +53,42 @@ const PisoEditor: React.FC<Props> = (props) => {
     refetchOnMount: false,
   });
 
-  const { mutate: deletePiso } = useMutation(deletePisoById, {
+  const { mutate: _deletePiso } = useMutation(deletePisoById, {
     onSuccess: () => {
       queryClient.invalidateQueries(["habitaciones"]);
     },
   });
 
-  const { mutate: createHabitacion } = useMutation(postHabitaciones, {
+  const { mutate: _createHabitacion } = useMutation(postHabitaciones, {
     onSuccess: () => {
       queryClient.invalidateQueries(["piso", props.piso.id]);
     },
-  })
-  if (isLoading) {
-    return <div>cargando...</div>;
-  }
+  });
 
-  if (isError) {
-    return <div>hubo un error!!!</div>;
-  }
+  
+  // const { mutate: _updateHabitacion } = useMutation(
+  //   // (params) => ( {
+  //   //   // updateHabitacion(params.habitacionData, params.id);
+      
+  //   // } )
+  //     // updateHabitacion(habitacion, id);
+  // );
+
+  if (isLoading) return <div>cargando...</div>;
+
+  if (isError) return <div>hubo un error!!!</div>;
 
   return (
     <div className="outline-primario outline rounded-lg p-0 block">
       <div className="bg-primario text-white text-2xl p-3 rounded-md flex items-center">
         Piso: {piso.numeroPiso}
         <IconButton
-        aria-label={"Eliminar piso"}
-        className="ml-auto "
-        size={'lg'}
-        variant={'outline'}
-        icon={<DeleteIcon className="" />}
-        onClick={() => console.log('delete piso' + props.piso.id)}
+          aria-label={"Eliminar piso"}
+          className="ml-auto "
+          size={"lg"}
+          variant={"outline"}
+          icon={<DeleteIcon className="" />}
+          onClick={() => console.log("delete piso" + props.piso.id)}
         />
       </div>
       <div className="p-4 flex flex-col">
@@ -82,8 +98,11 @@ const PisoEditor: React.FC<Props> = (props) => {
               nombre={hab.nombreHabitacion.toString()}
               estado={"ocupada"}
               key={hab.id}
-              className={'cursor-pointer'}
-              onClick={() => onOpen()}
+              className={"cursor-pointer"}
+              onClick={() => {
+                setEditableHab(hab);
+                onOpen();
+              }}
             />
           ))}
         </div>
@@ -91,7 +110,10 @@ const PisoEditor: React.FC<Props> = (props) => {
           colorScheme="green"
           leftIcon={<AddIcon />}
           className={"mt-4 ml-auto"}
-          onClick={onOpen}
+          onClick={() => {
+            setEditableHab(null);
+            onOpen();
+          }}
         >
           Agregar habitacion
         </Button>
@@ -103,7 +125,10 @@ const PisoEditor: React.FC<Props> = (props) => {
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <HabitacionForm callback={handleSubmitHabitacion} />
+              <HabitacionForm
+                callback={handleNewSubmitHabitacion}
+                habitacion={editableHab}
+              />
             </ModalBody>
           </ModalContent>
         </Modal>

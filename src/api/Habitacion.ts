@@ -8,6 +8,10 @@ export async function postHabitaciones(habitacion: Prisma.HabitacionCreateInput)
   return window.Main.db.habitaciones.postHabitacion(habitacion);
 }
 
+export async function updateHabitacion(habitacion: Prisma.HabitacionUpdateInput, id: number) {
+  return window.Main.db.habitaciones.updateHabitacion(habitacion, id);
+}
+
 export async function postPiso(piso: Prisma.HabitacionPisoCreateInput) {
   return window.Main.db.pisos.postPiso(piso);
 }

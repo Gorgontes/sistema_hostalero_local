@@ -114,6 +114,16 @@ ipcMain.handle(
 );
 
 ipcMain.handle(
+  "updateHabitacion",
+  async (_, habitacion: Prisma.HabitacionCreateInput, id: number) => {
+    return prisma.habitacion.update({
+      where: {id},
+      data: habitacion,
+    });
+  }
+);
+
+ipcMain.handle(
   "postPiso",
   async (_, piso: Prisma.HabitacionPisoCreateInput) => {
     return prisma.habitacionPiso.create({

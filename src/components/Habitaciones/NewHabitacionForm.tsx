@@ -12,7 +12,7 @@ import {
   NumberInputStepper,
   Textarea,
 } from "@chakra-ui/react";
-import { Prisma } from "@prisma/client";
+import { Habitacion, Prisma } from "@prisma/client";
 import { useCallback, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 
@@ -20,6 +20,7 @@ const SIZE_OF_DECIMALS = 2;
 
 type Props = {
   callback?: (habitacion: Omit<Prisma.HabitacionCreateInput, "piso">) => void;
+  habitacion?: null | Habitacion
 };
 
 type HabitacionFormValues = {
@@ -45,12 +46,26 @@ const defaultValues = {
 };
 
 const HabitacionForm = (props: Props) => {
+  const [_defaultValues, _] = useState(() => { 
+    if (!props.habitacion)
+      return defaultValues 
+    return {
+      nombreHabitacion: props.habitacion.nombreHabitacion,
+      camas:props.habitacion.camas.toString(),
+      banos:props.habitacion.banos.toString(),
+      tv: props.habitacion.tv,
+      wifi: props.habitacion.wifi,
+      precioReferencial:props.habitacion.precioReferencial?.toString() ?? "",
+      descripcion:props.habitacion.descripcion ?? "",
+      observaciones:props.habitacion.observaciones ?? "",
+    }
+  })
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm({ defaultValues: _defaultValues });
   const onSubmit: SubmitHandler<HabitacionFormValues> = (data) => {
     let {precioReferencial, camas, banos, ...formulario } = data;
     let newFormulario: (typeof formulario & {

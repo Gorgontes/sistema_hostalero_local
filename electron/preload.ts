@@ -25,6 +25,11 @@ const api = {
       postHabitacion: async (habitacion: Prisma.HabitacionCreateInput) => {
         return ipcRenderer.invoke("postHabitacion", habitacion);
       },
+      updateHabitacion: async (
+        habitacion: Prisma.HabitacionUpdateInput, id: number
+      ) => {
+        return ipcRenderer.invoke("updateHabitacion", habitacion, id);
+      },
     },
     pisos: {
       postPiso: async (
@@ -42,9 +47,9 @@ const api = {
       deletePisoById: async (id: number) => {
         return ipcRenderer.invoke("deletePisoById", id);
       },
-      fetchPisoById:async (id: number) => {
+      fetchPisoById: async (id: number) => {
         return ipcRenderer.invoke("fetchPisoById", id);
-      }
+      },
     },
   },
 
