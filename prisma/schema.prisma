@@ -54,7 +54,7 @@ model Habitacion {
   banos             Int            @default(1)
   wifi              Boolean        @default(true)
   tv                Boolean        @default(true)
-  precioReferencial Int?
+  precioReferencial BigInt?
 }
 
 model HabitacionPiso {
