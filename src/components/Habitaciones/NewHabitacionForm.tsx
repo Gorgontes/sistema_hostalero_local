@@ -15,7 +15,8 @@ import {
 import { Prisma } from "@prisma/client";
 import { useCallback, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-const MAX_DECIMAL_INPUT = 2;
+
+const SIZE_OF_DECIMALS = 2;
 
 type Props = {
   callback?: (habitacion: Omit<Prisma.HabitacionCreateInput, "piso">) => void;
@@ -42,10 +43,6 @@ const defaultValues = {
   descripcion: "",
   observaciones: "",
 };
-const regPrecio = new RegExp(String.raw`^\s*\d+(\.\d{0,`+ MAX_DECIMAL_INPUT.toString() + String.raw`})?\s*$`);
-// console.log('pattern', new RegExp(/^\s*\d+(\.\d{0,2})?\s*$/))
-console.log('pattern', regPrecio)
-console.log('pattern', regPrecio.test('2'))
 
 const HabitacionForm = (props: Props) => {
   const {
@@ -57,18 +54,15 @@ const HabitacionForm = (props: Props) => {
   const onSubmit: SubmitHandler<HabitacionFormValues> = (data) => {
     let {precioReferencial, camas, banos, ...formulario } = data;
     let newFormulario: (typeof formulario & {
-      camas: number | null,
-      banos: number | null,
+      camas: number,
+      banos: number,
       precioReferencial: number | null,
     }) = formulario as any;
-    // newFormulario.
-    console.log(precioReferencial)
     if(precioReferencial) {
-      const index = precioReferencial.search('.')
-      if (index >= 0) {
-        precioReferencial += '0'.repeat(MAX_DECIMAL_INPUT - (precioReferencial.length - index - 1))
+      let precio = parseFloat(precioReferencial)
+      if(!Number.isNaN(precio)) {
+        newFormulario.precioReferencial = parseInt(precio.toFixed(SIZE_OF_DECIMALS).replace('.',''));
       }
-      newFormulario.precioReferencial = parseInt(precioReferencial.replace('.',''),10);
     } else {
       newFormulario.precioReferencial = null;
     }
@@ -76,7 +70,7 @@ const HabitacionForm = (props: Props) => {
       newFormulario.camas = parseInt(camas,10);
     if(banos)
       newFormulario.banos = parseInt(banos,10);
-    console.log(newFormulario);
+    props.callback && props.callback(newFormulario);
   };
   console.log("rendering form");
   return (
@@ -119,9 +113,6 @@ const HabitacionForm = (props: Props) => {
           <Controller
             name="banos"
             control={control}
-            rules={
-              {pattern: regPrecio}
-            }
             render={({ field, fieldState }) => (
               <>
               <NumberInput className="!w-24 mx-4" min={0} {...field} >
@@ -168,16 +159,12 @@ const HabitacionForm = (props: Props) => {
               <NumberInput className="!w-40 relative">
                 <NumberInputField
                   {...register("precioReferencial", {
-                    valueAsNumber: true,
                     min: {
                       message: "(*)No se aceptan numeros negativos",
                       value: 0,
                     },
                   })}
                 />
-                <div className="absolute top-full text-rojo text-xs">
-                  {errors.precioReferencial?.message}
-                </div>
               </NumberInput>
             </>
           </div>

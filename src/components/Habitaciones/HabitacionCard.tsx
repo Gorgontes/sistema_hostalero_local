@@ -21,7 +21,7 @@ const HabitacionCard = ({className, estado, onClick, nombre}: Props) => {
     <div
       className={`text-3xl font-bold py-4 rounded-lg text-center ${estilosAdicionales}`}
       onClick={onClick}>
-      {nombre}SSS
+      {nombre}
     </div>
   );
 };
