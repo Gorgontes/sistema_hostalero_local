@@ -13,7 +13,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const height = 920;
-const width = 1080;
+const width = 1500;
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -117,7 +117,7 @@ ipcMain.handle(
   "updateHabitacion",
   async (_, habitacion: Prisma.HabitacionCreateInput, id: number) => {
     return prisma.habitacion.update({
-      where: {id},
+      where: { id },
       data: habitacion,
     });
   }
