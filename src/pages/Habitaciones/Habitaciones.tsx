@@ -10,10 +10,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchPisosAndHab } from "../api/Habitacion";
-import HabitacionCard from "../components/Habitaciones/HabitacionCard";
-import Piso from "../components/Habitaciones/Piso";
-import NewPisoForm from "../components/Habitaciones/NewPisoForm";
+import { fetchPisosAndHab } from "../../api/Habitacion";
+import HabitacionCard from "../../components/Habitaciones/HabitacionCard";
+import Piso from "../../components/Habitaciones/Piso";
+import NewPisoForm from "../../components/Habitaciones/NewPisoForm";
 
 type Props = {};
 
