@@ -1,6 +1,7 @@
 import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 
 import { ConnectionDriveStatus } from "../../constants/enums/connection_drive_status";
+import _ModalDescription from "./_ModalDescription";
 import _ModalLogoAndTitle from "./_ModalLogoAndTitle";
 import _Status from "./_Status";
 
@@ -22,13 +23,13 @@ const ConnectionDrive = () => {
 
             <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent width={1000} className="!max-w-none">
                     <ModalHeader className="bg-primario text-background_main">Sincronizar con Google Drive</ModalHeader>
                     <ModalCloseButton className="bg-rojo_suave text-background_main hover:bg-white" />
-                    <ModalBody className="outline">
+                    <ModalBody >
                         <_ModalLogoAndTitle />
                         <Input className="my-5 text-center" placeholder='https://google.com.drive/' size='md' />
-                        asdasdasd
+                        <_ModalDescription />
                     </ModalBody>
 
                     <ModalFooter className="mx-auto">
