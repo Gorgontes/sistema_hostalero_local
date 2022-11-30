@@ -1,9 +1,9 @@
 import cntl from "cntl";
 import { ConnectionDriveStatus } from "../../constants/enums/connection_drive_status";
-import { FaGoogleDrive } from 'react-icons/fa';
 
 import ReactLoading from "react-loading";
 import { Spinner } from '@chakra-ui/react'
+import { FaGoogleDrive } from "react-icons/fa";
 
 type StatusType = {
     connectionStatus: ConnectionDriveStatus,
@@ -26,7 +26,7 @@ const _Status = (status: StatusType) => {
             _colorStatus = "bg-oscuro";
             break;
         case ConnectionDriveStatus.Retrying:
-            _label = "REINTENADO ...";
+            _label = "REINTENTANDO ...";
             _colorStatus = "bg-amarillo_suave";
             _textColor = "text-primario"
             _showLoading = true;
