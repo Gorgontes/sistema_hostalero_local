@@ -19,7 +19,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 const SIZE_OF_DECIMALS = 2;
 
 type Props = {
-  callback?: (habitacion: Omit<Prisma.HabitacionCreateInput, "piso">) => void;
+  callback?: (habitacion: HabitacionSubmitValues) => void;
   habitacion?: null | Habitacion
 };
 
@@ -32,6 +32,16 @@ type HabitacionFormValues = {
   precioReferencial: string;
   descripcion: string;
   observaciones: string;
+};
+export type HabitacionSubmitValues = {
+  nombreHabitacion: string;
+  camas: number;
+  banos: number;
+  tv: boolean;
+  wifi: boolean;
+  precioReferencial?: number | null;
+  descripcion?: string;
+  observaciones?: string;
 };
 
 const defaultValues = {
@@ -68,11 +78,7 @@ const HabitacionForm = (props: Props) => {
   } = useForm({ defaultValues: _defaultValues });
   const onSubmit: SubmitHandler<HabitacionFormValues> = (data) => {
     let {precioReferencial, camas, banos, ...formulario } = data;
-    let newFormulario: (typeof formulario & {
-      camas: number,
-      banos: number,
-      precioReferencial: number | null,
-    }) = formulario as any;
+    let newFormulario: HabitacionSubmitValues = formulario as any;
     if(precioReferencial) {
       let precio = parseFloat(precioReferencial)
       if(!Number.isNaN(precio)) {
@@ -199,7 +205,7 @@ const HabitacionForm = (props: Props) => {
       </FormControl>
 
       <Button type="submit" className={"ml-auto !block"} colorScheme="green">
-        Crear habitacion
+        {props.habitacion ? 'Guardar' :  'Crear habitacion'}
       </Button>
     </form>
   );

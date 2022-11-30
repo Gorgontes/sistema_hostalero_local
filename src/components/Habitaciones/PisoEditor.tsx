@@ -18,7 +18,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import HabitacionForm from "./NewHabitacionForm";
+import HabitacionForm, { HabitacionSubmitValues } from "./NewHabitacionForm";
 import { Habitacion, Prisma } from "@prisma/client";
 
 interface Props {
@@ -27,9 +27,10 @@ interface Props {
 
 const PisoEditor: React.FC<Props> = (props) => {
   const queryClient = useQueryClient();
+  const [editableHab, setEditableHab] = useState<Habitacion | null>(null);
 
   const handleNewSubmitHabitacion = useCallback(
-    (habitacion: Omit<Prisma.HabitacionCreateInput, "piso">) => {
+    (habitacion: HabitacionSubmitValues) => {
       let newHabitacion: Prisma.HabitacionCreateInput = {
         ...habitacion,
         piso: { connect: { id: props.piso.id } },
@@ -40,7 +41,13 @@ const PisoEditor: React.FC<Props> = (props) => {
     [props.piso]
   );
 
-  const [editableHab, setEditableHab] = useState<Habitacion | null>(null);
+  const handleUpdateSubmitHabitacion = useCallback(
+    (hab: HabitacionSubmitValues) => {
+      onClose();
+      _updateHabitacion({ data: hab, id: editableHab!.id });
+    },
+    [editableHab]
+  );
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -65,14 +72,15 @@ const PisoEditor: React.FC<Props> = (props) => {
     },
   });
 
-  
-  // const { mutate: _updateHabitacion } = useMutation(
-  //   // (params) => ( {
-  //   //   // updateHabitacion(params.habitacionData, params.id);
-      
-  //   // } )
-  //     // updateHabitacion(habitacion, id);
-  // );
+  const { mutate: _updateHabitacion } = useMutation({
+    mutationFn: async (params: {
+      id: number;
+      data: Prisma.HabitacionUpdateInput;
+    }) => updateHabitacion(params.data, params.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["piso", props.piso.id]);
+    },
+  });
 
   if (isLoading) return <div>cargando...</div>;
 
@@ -126,7 +134,11 @@ const PisoEditor: React.FC<Props> = (props) => {
             <ModalCloseButton />
             <ModalBody>
               <HabitacionForm
-                callback={handleNewSubmitHabitacion}
+                callback={
+                  editableHab
+                    ? handleUpdateSubmitHabitacion
+                    : handleNewSubmitHabitacion
+                }
                 habitacion={editableHab}
               />
             </ModalBody>
