@@ -25,7 +25,7 @@ const ConnectionDrive = () => {
                 <ModalOverlay />
                 <ModalContent width={1000} className="!max-w-none">
                     <ModalHeader className="bg-primario text-background_main">Sincronizar con Google Drive</ModalHeader>
-                    <ModalCloseButton className="bg-rojo_suave text-background_main hover:bg-white" />
+                    <ModalCloseButton className="!bg-rojo_suave text-background_main hover:bg-white" />
                     <ModalBody >
                         <_ModalLogoAndTitle />
                         <Input className="my-5 text-center" placeholder='https://google.com.drive/' size='md' />
