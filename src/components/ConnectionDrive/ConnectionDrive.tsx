@@ -27,7 +27,7 @@ const ConnectionDrive = () => {
                     <ModalCloseButton className="bg-rojo_suave text-background_main hover:bg-white" />
                     <ModalBody className="outline">
                         <_ModalLogoAndTitle />
-                        <Input className="my-5" placeholder='https://google.com.drive/' size='md' />
+                        <Input className="my-5 text-center" placeholder='https://google.com.drive/' size='md' />
                         asdasdasd
                     </ModalBody>
 
