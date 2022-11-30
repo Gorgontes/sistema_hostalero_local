@@ -14,6 +14,8 @@ import { fetchPisosAndHab } from "../../api/Habitacion";
 import HabitacionCard from "../../components/Habitaciones/HabitacionCard";
 import Piso from "../../components/Habitaciones/Piso";
 import NewPisoForm from "../../components/Habitaciones/NewPisoForm";
+import _Filtros from "./_Filtros";
+import _EstadosHabitaciones from "./_EstadosHabitaciones";
 
 type Props = {};
 
@@ -51,8 +53,9 @@ const HabitacionesPage = (props: Props) => {
           ))}
         </div>
       </div>
-      <div className="bg-red-300">
-        Container
+      <div className="">
+        <_Filtros />
+        <_EstadosHabitaciones />
       </div>
     </div>
   );
