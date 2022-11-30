@@ -15,11 +15,11 @@ const styleEstado = {
   reservada: cntl`text-white bg-morado`,
 };
 
-const HabitacionCard = ({className, estado, onClick, nombre}: Props) => {
+const HabitacionCard = ({ className, estado, onClick, nombre }: Props) => {
   const estilosAdicionales = `${styleEstado[estado]} ${className}`
   return (
     <div
-      className={`text-3xl font-bold py-4 rounded-lg text-center ${estilosAdicionales}`}
+      className={`text-3xl font-bold py-2 rounded-lg text-center ${estilosAdicionales}`}
       onClick={onClick}>
       {nombre}
     </div>
