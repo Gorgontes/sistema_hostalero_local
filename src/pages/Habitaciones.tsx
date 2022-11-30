@@ -31,7 +31,7 @@ const HabitacionesPage = (props: Props) => {
 
   return (
     <div className="h-full grid grid-cols-[1fr_260px]">
-      <div className="grow flex flex-col">
+      <div className="grow flex flex-col m-5">
         <div className="flex px-3 pb-5 pt-1 align-baseline">
           <Heading className="text-primario inline" as="h2" size="lg">
             Habitaciones
@@ -47,11 +47,13 @@ const HabitacionesPage = (props: Props) => {
         </div>
         <div className="grow h-0 space-y-4">
           {habitaciones!.map((habitacion) => (
-            <Piso piso={habitacion} key={habitacion.id}/>
+            <Piso piso={habitacion} key={habitacion.id} />
           ))}
         </div>
       </div>
-      <div></div>
+      <div className="bg-red-300">
+        Container
+      </div>
     </div>
   );
 };
