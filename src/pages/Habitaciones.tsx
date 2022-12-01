@@ -19,7 +19,7 @@ type Props = {};
 
 const HabitacionesPage = (props: Props) => {
   const { data: habitaciones, isLoading } = useQuery(
-    ["habitaciones"],
+    ["pisos"],
     fetchPisosAndHab
   );
   // const { isOpen, onOpen, onClose } = useDisclosure();

@@ -12,8 +12,8 @@ import {
   NumberInputStepper,
   Textarea,
 } from "@chakra-ui/react";
-import { Habitacion, Prisma } from "@prisma/client";
-import { useCallback, useState } from "react";
+import { Habitacion } from "@prisma/client";
+import { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 
 const SIZE_OF_DECIMALS = 2;
@@ -82,7 +82,7 @@ const HabitacionForm = (props: Props) => {
     if(precioReferencial) {
       let precio = parseFloat(precioReferencial)
       if(!Number.isNaN(precio)) {
-        newFormulario.precioReferencial = parseInt(precio.toFixed(SIZE_OF_DECIMALS).replace('.',''));
+        newFormulario.precioReferencial = parseFloat(precio.toFixed(SIZE_OF_DECIMALS));
       }
     } else {
       newFormulario.precioReferencial = null;

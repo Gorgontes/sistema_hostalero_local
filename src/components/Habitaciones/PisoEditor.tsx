@@ -62,7 +62,7 @@ const PisoEditor: React.FC<Props> = (props) => {
 
   const { mutate: _deletePiso } = useMutation(deletePisoById, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["habitaciones"]);
+      queryClient.invalidateQueries(["pisos"]);
     },
   });
 

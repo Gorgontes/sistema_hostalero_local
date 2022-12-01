@@ -54,7 +54,7 @@ model Habitacion {
   banos             Int            @default(1)
   wifi              Boolean        @default(true)
   tv                Boolean        @default(true)
-  precioReferencial BigInt?
+  precioReferencial Float? // hay que usar float por que si usad decimal prisma genera una clases decimal js
 }
 
 model HabitacionPiso {
