@@ -1,12 +1,16 @@
 import cntl from "cntl";
 import { StringifyOptions } from "querystring";
-type Estado = "ocupada" | "libre" | "reservada";
+import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
+
+// type Estado = "ocupada" | "libre" | "reservada";
 
 type Props = {
-    estado: Estado;
-    nombre: string;
-    onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
-    className?: string;
+    label: string,
+    isActive: boolean,
+    // estado: Estado;
+    // nombre: string;
+    // onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
+    // className?: string;
 };
 
 const styleEstado = {
@@ -15,13 +19,11 @@ const styleEstado = {
     reservada: cntl`text-white bg-morado`,
 };
 
-const BcCheckbox = ({ className, estado, onClick, nombre }: Props) => {
-    const estilosAdicionales = `${styleEstado[estado]} ${className}`
+const BcCheckbox = ({ label, isActive }: Props) => {
     return (
-        <div
-            className={`text-3xl font-bold py-2 rounded-lg text-center ${estilosAdicionales}`}
-            onClick={onClick}>
-            {nombre}
+        <div className={`text-primario py-0 rounded-lg text-center`}>
+            {label}
+            <Checkbox defaultChecked className="ml-5"></Checkbox>
         </div>
     );
 };
