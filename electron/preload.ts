@@ -30,6 +30,9 @@ const api = {
       ) => {
         return ipcRenderer.invoke("updateHabitacion", habitacion, id);
       },
+      deleteHabitacionById: async( id: number) => {
+        return ipcRenderer.invoke("deleteHabitacionById", id)
+      }
     },
     pisos: {
       postPiso: async (

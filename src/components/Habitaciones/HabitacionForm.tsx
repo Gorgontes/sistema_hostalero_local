@@ -20,7 +20,8 @@ const SIZE_OF_DECIMALS = 2;
 
 type Props = {
   callback?: (habitacion: HabitacionSubmitValues) => void;
-  habitacion?: null | Habitacion
+  habitacion?: null | Habitacion;
+  onDelete?: () => void;
 };
 
 type HabitacionFormValues = {
@@ -56,44 +57,45 @@ const defaultValues = {
 };
 
 const HabitacionForm = (props: Props) => {
-  const [_defaultValues, _] = useState(() => { 
-    if (!props.habitacion)
-      return defaultValues 
+  const [_defaultValues, _] = useState(() => {
+    if (!props.habitacion) return defaultValues;
     return {
       nombreHabitacion: props.habitacion.nombreHabitacion,
-      camas:props.habitacion.camas.toString(),
-      banos:props.habitacion.banos.toString(),
+      camas: props.habitacion.camas.toString(),
+      banos: props.habitacion.banos.toString(),
       tv: props.habitacion.tv,
       wifi: props.habitacion.wifi,
-      precioReferencial:props.habitacion.precioReferencial?.toString() ?? "",
-      descripcion:props.habitacion.descripcion ?? "",
-      observaciones:props.habitacion.observaciones ?? "",
-    }
-  })
+      precioReferencial: props.habitacion.precioReferencial?.toString() ?? "",
+      descripcion: props.habitacion.descripcion ?? "",
+      observaciones: props.habitacion.observaciones ?? "",
+    };
+  });
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
   } = useForm({ defaultValues: _defaultValues });
+
   const onSubmit: SubmitHandler<HabitacionFormValues> = (data) => {
-    let {precioReferencial, camas, banos, ...formulario } = data;
+    let { precioReferencial, camas, banos, ...formulario } = data;
     let newFormulario: HabitacionSubmitValues = formulario as any;
-    if(precioReferencial) {
-      let precio = parseFloat(precioReferencial)
-      if(!Number.isNaN(precio)) {
-        newFormulario.precioReferencial = parseFloat(precio.toFixed(SIZE_OF_DECIMALS));
+    if (precioReferencial) {
+      let precio = parseFloat(precioReferencial);
+      if (!Number.isNaN(precio)) {
+        newFormulario.precioReferencial = parseFloat(
+          precio.toFixed(SIZE_OF_DECIMALS)
+        );
       }
     } else {
       newFormulario.precioReferencial = null;
     }
-    if(camas)
-      newFormulario.camas = parseInt(camas,10);
-    if(banos)
-      newFormulario.banos = parseInt(banos,10);
+    if (camas) newFormulario.camas = parseInt(camas, 10);
+    if (banos) newFormulario.banos = parseInt(banos, 10);
     props.callback && props.callback(newFormulario);
   };
-  console.log("rendering form");
+
   return (
     <form className="py-2 px-5 space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <FormControl
@@ -118,8 +120,8 @@ const HabitacionForm = (props: Props) => {
             name="camas"
             control={control}
             render={({ field }) => (
-              <NumberInput className="!w-24 mx-4" min={0} {...field} >
-                <NumberInputField className="!pr-2"/>
+              <NumberInput className="!w-24 mx-4" min={0} {...field}>
+                <NumberInputField className="!pr-2" />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
                   <NumberDecrementStepper />
@@ -136,14 +138,14 @@ const HabitacionForm = (props: Props) => {
             control={control}
             render={({ field, fieldState }) => (
               <>
-              <NumberInput className="!w-24 mx-4" min={0} {...field} >
-                <NumberInputField className="!pr-2" />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-              {fieldState.error && fieldState.error.message}
+                <NumberInput className="!w-24 mx-4" min={0} {...field}>
+                  <NumberInputField className="!pr-2" />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                {fieldState.error && fieldState.error.message}
               </>
             )}
           />
@@ -203,10 +205,19 @@ const HabitacionForm = (props: Props) => {
         <Textarea {...register("observaciones")} />
         <FormErrorMessage></FormErrorMessage>
       </FormControl>
+      <div className="flex justify-between">
+        <>
+          {props.habitacion ? (
+            <Button onClick={props.onDelete} colorScheme="red" >
+              Eliminar piso
+            </Button>
+          ): ''}
 
-      <Button type="submit" className={"ml-auto !block"} colorScheme="green">
-        {props.habitacion ? 'Guardar' :  'Crear habitacion'}
-      </Button>
+          <Button type="submit" colorScheme="green" className="ml-auto">
+            {props.habitacion ? "Guardar" : "Crear habitacion"}
+          </Button>
+        </>
+      </div>
     </form>
   );
 };

@@ -1,8 +1,14 @@
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Button, IconButton, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  IconButton,
+  ModalFooter,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useCallback, useState } from "react";
 import {
+  deleteHabitacionById,
   deletePisoById,
   fetchPisoById,
   postHabitaciones,
@@ -18,7 +24,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import HabitacionForm, { HabitacionSubmitValues } from "./NewHabitacionForm";
+import HabitacionForm, { HabitacionSubmitValues } from "./HabitacionForm";
 import { Habitacion, Prisma } from "@prisma/client";
 
 interface Props {
@@ -60,6 +66,12 @@ const PisoEditor: React.FC<Props> = (props) => {
     refetchOnMount: false,
   });
 
+  const { mutate: _deleteHabitacion } = useMutation(deleteHabitacionById, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["piso", props.piso.id]);
+    },
+  });
+
   const { mutate: _deletePiso } = useMutation(deletePisoById, {
     onSuccess: () => {
       queryClient.invalidateQueries(["pisos"]);
@@ -96,12 +108,12 @@ const PisoEditor: React.FC<Props> = (props) => {
           size={"lg"}
           variant={"outline"}
           icon={<DeleteIcon className="" />}
-          onClick={() => console.log("delete piso" + props.piso.id)}
+          onClick={() => _deletePiso(props.piso.id)}
         />
       </div>
       <div className="p-4 flex flex-col">
         <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
-          {piso.habitaciones.map((hab, index) => (
+          {piso.habitaciones.map((hab) => (
             <HabitacionCard
               nombre={hab.nombreHabitacion.toString()}
               estado={"ocupada"}
@@ -140,6 +152,10 @@ const PisoEditor: React.FC<Props> = (props) => {
                     : handleNewSubmitHabitacion
                 }
                 habitacion={editableHab}
+                onDelete={() => {
+                  onClose();
+                  _deleteHabitacion(editableHab!.id);
+                }}
               />
             </ModalBody>
           </ModalContent>

@@ -158,3 +158,10 @@ ipcMain.handle("fetchPisoById", async (_, id: number) => {
     },
   });
 });
+
+ipcMain.handle("deleteHabitacionById", async(_, id: number) => {
+  return prisma.habitacion.delete({
+    where: {id},
+    select: {id: true}
+  })
+})
