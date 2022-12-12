@@ -1,6 +1,6 @@
 import cntl from "cntl";
 import { StringifyOptions } from "querystring";
-type Estado = "ocupada" | "libre" | "reservada";
+export type Estado = "ocupada" | "libre" | "reservada";
 
 type Props = {
   estado: Estado;
