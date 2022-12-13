@@ -13,14 +13,14 @@ import { StringifyOptions } from "querystring";
 import { createContext } from "react";
 import HabitacionReservaForm from "./HabitacionReservaForm";
 import { HabitacionContext, PropsHabitacionCardContext, StyleEstado } from "./HabitacionCardContext"
+import _ModalLogoAndTitle from "../ConnectionDrive/_ModalLogoAndTitle";
 
 
 
-const HabitacionReservaCard = (props: PropsHabitacionCardContext ) => {
+const HabitacionReservaCard = (props: PropsHabitacionCardContext) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const estilosAdicionales = `${
-    StyleEstado[props.habitacion.estado as keyof typeof StyleEstado]
-  }`;
+  const estilosAdicionales = `${StyleEstado[props.habitacion.estado as keyof typeof StyleEstado]
+    }`;
   console.log(props.habitacion);
   return (
     <>
@@ -32,9 +32,10 @@ const HabitacionReservaCard = (props: PropsHabitacionCardContext ) => {
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent width={800} className={"!max-w-none"}>
+        <ModalContent width={1100} className={"!max-w-none"} >
           <ModalCloseButton />
-          <ModalHeader>this is the header</ModalHeader>
+          <ModalHeader className="bg-primario text-background_main">Habitación</ModalHeader>
+          <ModalCloseButton className="!bg-rojo_suave text-background_main hover:bg-white" />
           <ModalBody>
             <HabitacionContext.Provider value={props}>
               <HabitacionReservaForm />
