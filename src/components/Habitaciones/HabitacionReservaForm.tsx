@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import BcDetallesHabitacion from "../../basic_components/BcDetallesHabitacion";
 import BcHabitacionNumber from "../../basic_components/BcHabitacionNumber";
+import BcHuespedDatosFormLeft from "../../basic_components/BcHuespedDatosFormLeft";
+import BcHuespedDatosFormRight from "../../basic_components/BcHuespedDatosFormRight";
 import BcTextWithCircleState from "../../basic_components/BcTextWithCircleState";
 import { BasicStateRoom } from "../../constants/enums/BasicStateRoom";
 import { HabitacionContext, StyleEstado } from "./HabitacionCardContext";
@@ -59,9 +61,14 @@ const HabitacionReservaForm = (props: Props) => {
         </div>
       </div>
       <div className="flex">
-        <div className="flex-1">form huesped</div>
-        <div className="flex-1">form estadia</div>
+        <div className="flex-1 mr-5">
+          <BcHuespedDatosFormLeft />
+        </div>
+        <div className="flex-1">
+          <BcHuespedDatosFormRight status={BasicStateRoom.free} />
+        </div>
       </div>
+      <div className="mt-10"></div>
     </div>
   );
 };
