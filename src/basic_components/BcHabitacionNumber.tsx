@@ -43,11 +43,22 @@ const BcHabitacionNumber = ({ numero, estado }: Props) => {
             break;
     }
 
+
+    let _sizeNumber
+    if (numero.length < 4) {
+        _sizeNumber = 'text-8xl'
+    } else if (numero.length < 8) {
+        _sizeNumber = 'text-4xl'
+    } else {
+        _sizeNumber = 'text-2xl'
+
+    }
     return (
         <div className={`
             ${_colorBorder}
             ${_colorText}
-            text-8xl font-semibold
+            ${_sizeNumber}
+            font-semibold
             py-8 text-center
             flex items-center
             w-72 h-48 justify-center rounded-lg

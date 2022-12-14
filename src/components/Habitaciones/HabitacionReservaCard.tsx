@@ -22,10 +22,18 @@ const HabitacionReservaCard = (props: PropsHabitacionCardContext) => {
   const estilosAdicionales = `${StyleEstado[props.habitacion.estado as keyof typeof StyleEstado]
     }`;
   console.log(props.habitacion);
+  let _sizeNumber = props.habitacion.nombreHabitacion.length > 5 ? "text-2xl" : "text-3xl"
+
   return (
     <>
       <div
-        className={`text-3xl font-bold py-2 rounded-lg text-center ${estilosAdicionales}`}
+        className={`
+            ${_sizeNumber}
+            font-bold
+            py-2 rounded-lg
+            text-center
+            ${estilosAdicionales}
+        `}
         onClick={onOpen}
       >
         {props.habitacion.nombreHabitacion}
