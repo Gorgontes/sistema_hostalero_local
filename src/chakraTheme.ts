@@ -20,6 +20,9 @@ const theme = extendTheme(
       },
       red: {
         500: '#b11810'
+      },
+      purple: {
+        500: '#85408B'
       }
     },
   },

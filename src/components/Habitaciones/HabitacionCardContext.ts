@@ -10,6 +10,6 @@ export type PropsHabitacionCardContext = {
 
 export const StyleEstado = {
   libre: cntl`text-primario bg-white border-primario border-4`,
-  ocupada: cntl`text-white bg-primario border-primario border-4`,
-  reservada: cntl`text-white bg-morado`,
+  ocupado: cntl`text-white bg-primario border-primario border-4`,
+  reservado: cntl`text-white bg-morado border-morado border-4`,
 };

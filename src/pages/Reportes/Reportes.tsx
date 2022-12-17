@@ -24,7 +24,25 @@ const Reportes = () => {
             console.log(valor);
         }}>
             <div>{valor}</div>
-            <div>pruebaaa</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
+            <div>text</div>
             <div>pruebaaa</div>
             <div>pruebaaa</div>
             <div>pruebaaa</div>

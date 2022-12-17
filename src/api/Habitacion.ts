@@ -20,8 +20,8 @@ export async function postPiso(piso: Prisma.HabitacionPisoCreateInput) {
   return window.Main.db.pisos.postPiso(piso);
 }
 
-export async function fetchPisosAndHab() {
-  return window.Main.db.pisos.fetchPisosAndHab();
+export async function fetchPisosAndHab(habitacionFitlro?: Prisma.HabitacionListRelationFilter) {
+  return window.Main.db.pisos.fetchPisosAndHab(habitacionFitlro);
 }
 
 export async function deletePisoById(id: number) {

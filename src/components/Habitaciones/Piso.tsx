@@ -60,7 +60,7 @@ const Piso: React.FC<Props> = (props) => {
           {piso.habitaciones.length ? (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-4">
               {piso.habitaciones.map((habitacion) => (
-                <HabitacionReservaCard habitacion={habitacion}/>
+                <HabitacionReservaCard habitacion={habitacion} key={habitacion.id}/>
               ))}
             </div>
           ) : (

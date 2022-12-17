@@ -1,49 +1,105 @@
-import React, { useContext } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { ElementRef, useContext, useRef } from "react";
+import { postReserva } from "../../api/Reserva";
 import BcDetallesHabitacion from "../../basic_components/BcDetallesHabitacion";
 import BcHabitacionNumber from "../../basic_components/BcHabitacionNumber";
 import BcHuespedDatosFormLeft from "../../basic_components/BcHuespedDatosFormLeft";
-import BcHuespedDatosFormRight from "../../basic_components/BcHuespedDatosFormRight";
+import BcHuespedDatosFormRight, {
+  _Buttons,
+} from "../../basic_components/BcHuespedDatosFormRight";
 import BcTextWithCircleState from "../../basic_components/BcTextWithCircleState";
 import { BasicStateRoom } from "../../constants/enums/BasicStateRoom";
 import { HabitacionContext, StyleEstado } from "./HabitacionCardContext";
 
-type Props = {};
+type Props = {
+  onClose: () => void;
+};
 
 const HabitacionReservaForm = (props: Props) => {
+  const queryClient = useQueryClient()
   const habitacionContext = useContext(HabitacionContext);
-  const styleEstado =
-    StyleEstado[
-    habitacionContext?.habitacion.estado as keyof typeof StyleEstado
-    ];
+  const huespedFormRef =
+    useRef<ElementRef<typeof BcHuespedDatosFormLeft>>(null);
+  const estadiaFormRef =
+    useRef<ElementRef<typeof BcHuespedDatosFormRight>>(null);
 
-  let currentState
-  console.log(habitacionContext?.habitacion.banos)
-  console.log(habitacionContext?.habitacion.camas)
-  console.log(habitacionContext?.habitacion.wifi)
-  console.log(habitacionContext?.habitacion.tv)
+  const { mutate: _postReserva } = useMutation(postReserva, {
+    onSuccess() {
+      queryClient.invalidateQueries(["piso", habitacionContext?.habitacion.pisoId])
+    }
+  });
+  const onOcupar = () => {
+    const datosHuesped = huespedFormRef.current?.getDatosHuesped();
+    const datosEstadia = estadiaFormRef.current?.getDatos();
+    _postReserva({
+      cliente: {
+        create: {
+          ciudadProcedencia: datosHuesped?.ciudadProcedencia,
+          nombresCompletos: datosHuesped?.nombresCompletos!,
+          numeroDocumento: datosHuesped?.numeroDocumento!,
+        },
+      },
+      habitacion: { connect: {id: habitacionContext?.habitacion.id!}},
+      fechaIngreso: datosEstadia?.fechaIngreso,
+      noches: datosEstadia?.noches,
+      precio: datosEstadia?.precio,
+      observacion: datosHuesped?.observaciones
+    });
+    props.onClose()
+  };
+
+  const onReservar = () => {
+    const datosHuesped = huespedFormRef.current?.getDatosHuesped();
+    const datosEstadia = estadiaFormRef.current?.getDatos();
+    _postReserva({
+      cliente: {
+        create: {
+          ciudadProcedencia: datosHuesped?.ciudadProcedencia,
+          nombresCompletos: datosHuesped?.nombresCompletos!,
+          numeroDocumento: datosHuesped?.numeroDocumento!,
+        },
+      },
+      habitacion: { connect: {id: habitacionContext?.habitacion.id!}},
+      fechaIngreso: datosEstadia?.fechaIngreso,
+      noches: datosEstadia?.noches,
+      precio: datosEstadia?.precio,
+      observacion: datosHuesped?.observaciones,
+      fechaReserva: new Date()
+    });
+    props.onClose()
+  };
+
+  const onFinalizar = () => {
+    console.log("finalizando");
+  };
+
+  let currentState: BasicStateRoom;
   switch (habitacionContext?.habitacion.estado) {
     case "libre":
-      currentState = BasicStateRoom.free
+      currentState = BasicStateRoom.free;
       break;
     case "ocupado":
-      currentState = BasicStateRoom.occupied
+      currentState = BasicStateRoom.occupied;
       break;
     case "reservado":
-      currentState = BasicStateRoom.reserved
+      currentState = BasicStateRoom.reserved;
       break;
 
     default:
-      currentState = BasicStateRoom.occupied
+      currentState = BasicStateRoom.occupied;
       break;
   }
   return (
     <div className="">
       <div className="flex space-x-28">
-        <BcHabitacionNumber numero={habitacionContext?.habitacion.nombreHabitacion as string} estado={currentState} />
+        <BcHabitacionNumber
+          numero={habitacionContext?.habitacion.nombreHabitacion as string}
+          estado={currentState}
+        />
         <div className="flex divide-x divide-dashed hover:divide-solid shadow-sm shadow-primario rounded-lg">
-          <div className="w-72 mx-auto items-center justify-center">
+          <div className="w-72 mx-auto flex flex-col">
             Estado
-            <div className="items-center flex justify-center">
+            <div className="items-center flex justify-center grow">
               <BcTextWithCircleState estado={currentState} />
             </div>
           </div>
@@ -51,21 +107,31 @@ const HabitacionReservaForm = (props: Props) => {
           <div className="mx-auto w-72 items-center justify-center">
             Detalles
             <BcDetallesHabitacion
-              banos={habitacionContext?.habitacion.banos as number}
-              camas={habitacionContext?.habitacion.camas as number}
-              hasTv={habitacionContext?.habitacion.tv as boolean}
-              hasWifi={habitacionContext?.habitacion.wifi as boolean}
+              banos={habitacionContext!?.habitacion.banos}
+              camas={habitacionContext!?.habitacion.camas}
+              hasTv={habitacionContext!?.habitacion.tv}
+              hasWifi={habitacionContext!?.habitacion.wifi}
             />
-
           </div>
         </div>
       </div>
       <div className="flex">
         <div className="flex-1 mr-5">
-          <BcHuespedDatosFormLeft />
+          <BcHuespedDatosFormLeft ref={huespedFormRef} />
         </div>
         <div className="flex-1">
-          <BcHuespedDatosFormRight status={BasicStateRoom.free} />
+          <BcHuespedDatosFormRight ref={estadiaFormRef}>
+            {() => (
+              <>
+                <_Buttons
+                  status={currentState}
+                  onOcupar={onOcupar}
+                  onFinalizar={onFinalizar}
+                  onReservar={onReservar}
+                />
+              </>
+            )}
+          </BcHuespedDatosFormRight>
         </div>
       </div>
       <div className="mt-10"></div>

@@ -127,7 +127,7 @@ ipcMain.handle(
   "postPiso",
   async (_, piso: Prisma.HabitacionPisoCreateInput) => {
     return prisma.habitacionPiso.create({
-      data: { ...piso },
+      data: piso,
       select: {
         id: true,
       },
@@ -135,11 +135,15 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle("fetchPisosAndHabitaciones", async () => {
+ipcMain.handle("fetchPisosAndHabitaciones", async (_, habitacionesFiltros: Prisma.HabitacionListRelationFilter) => {
   return prisma.habitacionPiso.findMany({
     include: {
       habitaciones: true,
     },
+    where: {
+      habitaciones: habitacionesFiltros
+    },
+  
   });
 });
 
@@ -159,9 +163,30 @@ ipcMain.handle("fetchPisoById", async (_, id: number) => {
   });
 });
 
-ipcMain.handle("deleteHabitacionById", async(_, id: number) => {
+ipcMain.handle("deleteHabitacionById", async (_, id: number) => {
   return prisma.habitacion.delete({
-    where: {id},
-    select: {id: true}
+    where: { id },
+    select: { id: true }
   })
 })
+
+ipcMain.handle("postReserva", async (_, reserva: Prisma.ReservaCreateInput) => {
+    await prisma.habitacion.update({
+      where: {
+        id: reserva.habitacion.connect?.id!
+      },
+      data: {
+        estado: reserva.fechaReserva == null ? "ocupado": "reservado"
+      },
+      select: {
+        id: true,
+        estado: true
+      }
+    })
+  return prisma.reserva.create({
+    data: reserva,
+    select: { id: true }
+  })
+})
+
+// ipcMain.handle

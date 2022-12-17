@@ -20,7 +20,7 @@ type Props = {};
 const HabitacionesPage = (props: Props) => {
   const { data: habitaciones, isLoading } = useQuery(
     ["pisos"],
-    fetchPisosAndHab
+    () => fetchPisosAndHab()
   );
   // const { isOpen, onOpen, onClose } = useDisclosure();
   console.log(habitaciones);
@@ -36,14 +36,14 @@ const HabitacionesPage = (props: Props) => {
           <Heading className="text-primario inline" as="h2" size="lg">
             Habitaciones
           </Heading>
-          <InputGroup className="ml-auto" width="80">
+          {/* <InputGroup className="ml-auto" width="80">
             <Input className="!bg-white shadow-lg" />
             <InputRightElement
               pointerEvents="none"
               children={<Search2Icon />}
               className=""
             />
-          </InputGroup>
+          </InputGroup> */}
         </div>
         <div className="grow h-0 space-y-4">
           {habitaciones!.map((habitacion) => (

@@ -10,6 +10,11 @@ declare global {
 
 const api = {
   db: {
+    reserva: {
+      postReserva:async (reserva: Prisma.ReservaCreateInput) => {
+        return ipcRenderer.invoke("postReserva", reserva)
+      }
+    },
     users: {
       createUser: async (user: Prisma.UserCreateInput) => {
         return ipcRenderer.invoke("createUser", user);
@@ -40,12 +45,12 @@ const api = {
       ): Promise<HabitacionPiso> => {
         return ipcRenderer.invoke("postPiso", piso);
       },
-      fetchPisosAndHab: async (): Promise<
+      fetchPisosAndHab: async (habitacionFiltro?: Prisma.HabitacionListRelationFilter): Promise<
         Array<
           Prisma.HabitacionPisoGetPayload<{ include: { habitaciones: true } }>
         >
       > => {
-        return ipcRenderer.invoke("fetchPisosAndHabitaciones");
+        return ipcRenderer.invoke("fetchPisosAndHabitaciones", habitacionFiltro);
       },
       deletePisoById: async (id: number) => {
         return ipcRenderer.invoke("deletePisoById", id);
