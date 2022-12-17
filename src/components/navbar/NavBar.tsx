@@ -17,7 +17,7 @@ const opciones = {
         },
         {
             "label": "Inventario",
-            "url": "---"
+            "url": "/error-404"
         },
         {
             "label": "Configurar Hotel",
@@ -25,7 +25,7 @@ const opciones = {
         },
         {
             "label": "Salir",
-            "url": "---"
+            "url": "/error-404"
         }
     ]
 }
@@ -34,11 +34,11 @@ const caja = {
     "items": [
         {
             "label": "cajita 1",
-            "url": "---"
+            "url": "/error-404"
         },
         {
             "label": "cajita 2",
-            "url": "---"
+            "url": "/error-404"
         }
 
     ]
@@ -57,7 +57,7 @@ const historial = {
     "items": [
         {
             "label": "historita",
-            "url": "---"
+            "url": "/error-404"
         }
     ]
 }
@@ -66,7 +66,7 @@ const acerca = {
     "items": [
         {
             "label": "ver acerca",
-            "url": "---"
+            "url": "/error-404"
         }
     ]
 }

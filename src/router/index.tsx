@@ -2,6 +2,8 @@ import { createBrowserRouter, createRoutesFromElements, Route } from "react-rout
 import EditarHabitaciones from "../pages/EditarHabitaciones"
 import HabitacionesPage from "../pages/Habitaciones/Habitaciones"
 import ReportesVer from "../pages/Reportes/ReportesVer"
+import Error404 from "../pages/Error404/Error404"
+
 export default createBrowserRouter([
   {
     path: "/",
@@ -18,6 +20,10 @@ export default createBrowserRouter([
   {
     path: "/reportes-ver",
     element: <ReportesVer />
+  },
+  {
+    path: "*",
+    element: <Error404 />
   },
 ])
 /* export default createBrowserRouter(
