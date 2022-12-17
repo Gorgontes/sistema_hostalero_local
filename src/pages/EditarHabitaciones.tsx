@@ -24,7 +24,7 @@ type Props = {};
 const EditarHabitaciones = (props: Props) => {
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: pisos, isLoading } = useQuery(["pisos"], fetchPisosAndHab);
+  const { data: pisos, isLoading } = useQuery(["pisos"], () => fetchPisosAndHab());
 
   const { mutate: _postPiso } = useMutation(postPiso, {
     onSuccess: () => {

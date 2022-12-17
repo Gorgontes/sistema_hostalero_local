@@ -19,20 +19,18 @@ import _ModalLogoAndTitle from "../ConnectionDrive/_ModalLogoAndTitle";
 
 const HabitacionReservaCard = (props: PropsHabitacionCardContext) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const estilosAdicionales = `${StyleEstado[props.habitacion.estado as keyof typeof StyleEstado]
-    }`;
-  console.log(props.habitacion);
+  const estilosAdicionales = `${StyleEstado[props.habitacion.estado as keyof typeof StyleEstado]}`;
   let _sizeNumber = props.habitacion.nombreHabitacion.length > 5 ? "text-2xl" : "text-3xl"
 
   return (
     <>
       <div
         className={`
-            ${_sizeNumber}
-            font-bold
-            py-2 rounded-lg
-            text-center
-            ${estilosAdicionales}
+          ${_sizeNumber}
+          font-bold
+          py-2 rounded-lg
+          text-center
+          ${estilosAdicionales}
         `}
         onClick={onOpen}
       >
@@ -46,7 +44,7 @@ const HabitacionReservaCard = (props: PropsHabitacionCardContext) => {
           <ModalCloseButton className="!bg-rojo_suave text-background_main hover:bg-white" />
           <ModalBody>
             <HabitacionContext.Provider value={props}>
-              <HabitacionReservaForm />
+              <HabitacionReservaForm onClose={onClose}/>
             </HabitacionContext.Provider>
           </ModalBody>
         </ModalContent>

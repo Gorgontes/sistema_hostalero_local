@@ -14,28 +14,30 @@ model User {
 }
 
 model Cliente {
-  id              Int       @id @default(autoincrement())
-  nombres         String
-  apellidoPaterno String?
-  apellidoMaterno String?
-  tipoDocumento   Int
-  numeroDocumento Int
-  reservas        Reserva[]
+  id                Int       @id @default(autoincrement())
+  nombresCompletos  String
+  tipoDocumento     Int?
+  numeroDocumento   String
+  fechaNacimiento   DateTime?
+  ciudadProcedencia String?
+  reservas          Reserva[]
 }
 
 model TipoDocumento {
-  id Int @id @default(autoincrement())
-  nombre String
+  id       Int    @id @default(autoincrement())
+  nombre   String
   longitud Int
 }
 
 model Reserva {
   id           Int        @id @default(autoincrement())
-  precio       Int
+  precio       Float?
   fechaIngreso DateTime?
-  fechaSalida  DateTime?
+  fechaReserva DateTime?
+  noches       Int?
   habitacionId Int
   clienteId    Int
+  observacion  String?
   cliente      Cliente    @relation(fields: [clienteId], references: [id])
   habitacion   Habitacion @relation(fields: [habitacionId], references: [id])
 }

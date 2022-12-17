@@ -209,7 +209,7 @@ const HabitacionForm = (props: Props) => {
         <>
           {props.habitacion ? (
             <Button onClick={props.onDelete} colorScheme="red" >
-              Eliminar piso
+              Eliminar habitación
             </Button>
           ): ''}
 
