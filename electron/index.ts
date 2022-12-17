@@ -1,5 +1,6 @@
 // Native
 import { join } from "path";
+import { sincronizar } from "./googleapi";
 
 // Packages
 import { BrowserWindow, app, ipcMain } from "electron";
@@ -173,22 +174,26 @@ ipcMain.handle("deleteHabitacionById", async (_, id: number) => {
 })
 
 ipcMain.handle("postReserva", async (_, reserva: Prisma.ReservaCreateInput) => {
-    await prisma.habitacion.update({
-      where: {
-        id: reserva.habitacion.connect?.id!
-      },
-      data: {
-        estado: reserva.fechaReserva == null ? "ocupado": "reservado"
-      },
-      select: {
-        id: true,
-        estado: true
-      }
-    })
+  await prisma.habitacion.update({
+    where: {
+      id: reserva.habitacion.connect?.id!
+    },
+    data: {
+      estado: reserva.fechaReserva == null ? "ocupado" : "reservado"
+    },
+    select: {
+      id: true,
+      estado: true
+    }
+  })
   return prisma.reserva.create({
     data: reserva,
     select: { id: true }
   })
+})
+
+ipcMain.handle("sincronizar", async (_,) => {
+  await sincronizar();
 })
 
 // ipcMain.handle

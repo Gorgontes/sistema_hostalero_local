@@ -9,9 +9,14 @@ declare global {
 }
 
 const api = {
+  googleapi: {
+    sincronizar: () => {
+      ipcRenderer.invoke("sincronizar",);
+    }
+  },
   db: {
     reserva: {
-      postReserva:async (reserva: Prisma.ReservaCreateInput) => {
+      postReserva: async (reserva: Prisma.ReservaCreateInput) => {
         return ipcRenderer.invoke("postReserva", reserva)
       }
     },
@@ -35,7 +40,7 @@ const api = {
       ) => {
         return ipcRenderer.invoke("updateHabitacion", habitacion, id);
       },
-      deleteHabitacionById: async( id: number) => {
+      deleteHabitacionById: async (id: number) => {
         return ipcRenderer.invoke("deleteHabitacionById", id)
       }
     },
