@@ -32,6 +32,7 @@
     "electron-builder": "^23.6.0",
     "electron-is-dev": "^2.0.0",
     "framer-motion": "^7.6.15",
+    "googleapis": "^109.0.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "match-sorter": "^6.3.1",

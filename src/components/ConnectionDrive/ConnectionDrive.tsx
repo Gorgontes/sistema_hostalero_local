@@ -26,14 +26,20 @@ const ConnectionDrive = () => {
                 <ModalContent width={1000} className="!max-w-none">
                     <ModalHeader className="bg-primario text-background_main">Sincronizar con Google Drive</ModalHeader>
                     <ModalCloseButton className="!bg-rojo_suave text-background_main hover:bg-white" />
-                    <ModalBody >
+                    <ModalBody className="">
                         <_ModalLogoAndTitle />
                         <Input className="my-5 text-center" placeholder='https://google.com.drive/' size='md' />
+                        <div className="max-w-[350px] mx-auto ">
+                            <Input className="my-5 text-center " placeholder='Nombre de Hoja' size='md' />
+                        </div>
                         <_ModalDescription />
                     </ModalBody>
-
                     <ModalFooter className="mx-auto">
-                        <Button colorScheme='green' variant='solid' mr={3} onClick={onClose}>
+                        <Button colorScheme='green' variant='solid' mr={3} onClick={() => {
+                            console.log("probando")
+                            // onClose();
+                        }
+                        }>
                             Sincronizar
                         </Button>
                     </ModalFooter>
