@@ -1,7 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from "react-router-dom"
 import EditarHabitaciones from "../pages/EditarHabitaciones"
 import HabitacionesPage from "../pages/Habitaciones/Habitaciones"
-import Reportes from "../pages/Reportes/reportes"
+import ReportesVer from "../pages/Reportes/ReportesVer"
 export default createBrowserRouter([
   {
     path: "/",
@@ -17,7 +17,7 @@ export default createBrowserRouter([
   },
   {
     path: "/reportes-ver",
-    element: <Reportes />
+    element: <ReportesVer />
   },
 ])
 /* export default createBrowserRouter(
