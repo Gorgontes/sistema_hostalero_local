@@ -10,7 +10,7 @@ import installExtension, {
 } from "electron-devtools-installer";
 
 // Prisma
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, Habitacion, Reserva } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const height = 920;
@@ -34,7 +34,7 @@ function createWindow() {
     : join(__dirname, "../src/out/index.html");
 
   if (isDev) {
-    installExtension(REACT_DEVELOPER_TOOLS)
+    installExtension(REACT_DEVELOPER_TOOLS);
     window?.loadURL(url);
   } else {
     window?.loadFile(url);
@@ -58,7 +58,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  console.log(`el id de la extension es: ${REACT_DEVELOPER_TOOLS.id}`)
+  console.log(`el id de la extension es: ${REACT_DEVELOPER_TOOLS.id}`);
   createWindow();
 
   app.on("activate", () => {
@@ -75,17 +75,14 @@ app.on("window-all-closed", () => {
 
 // listen the channel `message` and resend the received message to the renderer process
 
-ipcMain.handle(
-  "createUser",
-  async (_, userData: Prisma.UserCreateInput) => {
-    // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
-    const newUser = await prisma.user.create({
-      data: userData,
-    });
-    console.log(`se creo el usuario: ${newUser.id} con ${newUser.name}`);
-    return true;
-  }
-);
+ipcMain.handle("createUser", async (_, userData: Prisma.UserCreateInput) => {
+  // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
+  const newUser = await prisma.user.create({
+    data: userData,
+  });
+  console.log(`se creo el usuario: ${newUser.id} con ${newUser.name}`);
+  return true;
+});
 
 ipcMain.handle("getUsers", async () => {
   return prisma.user.findMany();
@@ -136,19 +133,22 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle("fetchPisosAndHabitaciones", async (_, habitacionesFiltros: Prisma.HabitacionWhereInput) => {
-  console.log(habitacionesFiltros);
-  return prisma.habitacionPiso.findMany({
-    include: {
-      habitaciones: {
-        where: habitacionesFiltros
+ipcMain.handle(
+  "fetchPisosAndHabitaciones",
+  async (_, habitacionesFiltros: Prisma.HabitacionWhereInput) => {
+    console.log(habitacionesFiltros);
+    return prisma.habitacionPiso.findMany({
+      include: {
+        habitaciones: {
+          where: habitacionesFiltros,
+        },
+        // habitaciones: {
+        //   where: {banos: {equals: 2 }}
+        // },
       },
-      // habitaciones: {
-      //   where: {banos: {equals: 2 }}
-      // },
-    },
-  });
-});
+    });
+  }
+);
 
 ipcMain.handle("deletePisoById", async (_, id: number) => {
   return prisma.habitacionPiso.delete({
@@ -169,27 +169,41 @@ ipcMain.handle("fetchPisoById", async (_, id: number) => {
 ipcMain.handle("deleteHabitacionById", async (_, id: number) => {
   return prisma.habitacion.delete({
     where: { id },
-    select: { id: true }
-  })
-})
+    select: { id: true },
+  });
+});
 
-ipcMain.handle("postReserva", async (_, reserva: Prisma.ReservaCreateInput) => {
-  await prisma.habitacion.update({
+
+ipcMain.handle(
+  "reservarHabitacion",
+  async (
+    _,
+    datosReserva: Prisma.ReservaCreateInput,
+    habitacion: Habitacion
+  ) => {
+    if (habitacion.reservaId === null)
+      return prisma.habitacion.update({
+        data: {
+          reservaActual: { create: datosReserva },
+        },
+        where: {
+          id: habitacion.id,
+        },
+      });
+    throw Error("La habitacion ya tiene una reservacion o esta ocupada")
+  }
+);
+
+ipcMain.handle("finalizarReservacion",async (_, reserva: Reserva) => {
+  prisma.habitacion.update({
     where: {
-      id: reserva.habitacion.connect?.id!
+      id: reserva.habitacionId
     },
     data: {
-      estado: reserva.fechaReserva == null ? "ocupado" : "reservado"
-    },
-    select: {
-      id: true,
-      estado: true
+      // reservaActual: {delete:}
     }
   })
-  return prisma.reserva.create({
-    data: reserva,
-    select: { id: true }
-  })
+  
 })
 
 ipcMain.handle("sincronizar", async (_,) => {
@@ -197,3 +211,6 @@ ipcMain.handle("sincronizar", async (_,) => {
 })
 
 // ipcMain.handle
+ipcMain.handle("getRevervaById", async (_, id: number) => {
+  return prisma.reserva;
+});

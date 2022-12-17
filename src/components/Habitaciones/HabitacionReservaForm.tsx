@@ -18,6 +18,7 @@ type Props = {
 const HabitacionReservaForm = (props: Props) => {
   const queryClient = useQueryClient()
   const habitacionContext = useContext(HabitacionContext);
+  // const {data: reserva} = useQuery()
   const huespedFormRef =
     useRef<ElementRef<typeof BcHuespedDatosFormLeft>>(null);
   const estadiaFormRef =
@@ -25,7 +26,7 @@ const HabitacionReservaForm = (props: Props) => {
 
   const { mutate: _postReserva } = useMutation(postReserva, {
     onSuccess() {
-      queryClient.invalidateQueries(["piso", habitacionContext?.habitacion.pisoId])
+      queryClient.invalidateQueries(["pisos"])
     }
   });
   const onOcupar = () => {
@@ -117,7 +118,7 @@ const HabitacionReservaForm = (props: Props) => {
       </div>
       <div className="flex">
         <div className="flex-1 mr-5">
-          <BcHuespedDatosFormLeft ref={huespedFormRef} />
+          <BcHuespedDatosFormLeft ref={huespedFormRef} status={currentState}/>
         </div>
         <div className="flex-1">
           <BcHuespedDatosFormRight ref={estadiaFormRef}>

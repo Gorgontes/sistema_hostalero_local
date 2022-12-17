@@ -39,19 +39,23 @@ model Reserva {
   clienteId    Int
   observacion  String?
   cliente      Cliente    @relation(fields: [clienteId], references: [id])
-  habitacion   Habitacion @relation(fields: [habitacionId], references: [id])
+  habitacion   Habitacion @relation(fields: [habitacionId], references: [id], "TodasLasReservas")
+  habitacionActual Habitacion? @relation(name:"ReservaActual")
 }
 
 model Habitacion {
   id                Int            @id @default(autoincrement())
   pisoId            Int
   // detalles          String?
+  reservaActual     Reserva?       @relation(fields: [reservaId], references: [id], name: "ReservaActual") 
+  reservaId         Int? @unique
+
   descripcion       String?
   observaciones     String?
   estado            String         @default("libre")
   nombreHabitacion  String
   piso              HabitacionPiso @relation(fields: [pisoId], references: [id], onDelete: Cascade)
-  reservas          Reserva[]
+  reservas          Reserva[]     @relation("TodasLasReservas")
   camas             Int            @default(1)
   banos             Int            @default(1)
   wifi              Boolean        @default(true)

@@ -1,8 +1,13 @@
 import { Input, Textarea } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { forwardRef, useImperativeHandle, useRef } from "react";
+import { BasicStateRoom } from "../constants/enums/BasicStateRoom";
+import Prisma from '@prisma/client'
 
-type Props = {};
+type Props = {
+  status: BasicStateRoom,
+  huesped?: Prisma.Cliente
+};
 
 type DatosHuesped = {
   numeroDocumento: string;
@@ -19,6 +24,7 @@ interface Handlers {
 const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
   const { register, getValues } = useForm<DatosHuesped>();
   const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const isEditable = props.status !== BasicStateRoom.free
   useImperativeHandle(
     ref,
     () => ({
@@ -39,6 +45,7 @@ const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
           className="text-left"
           type={"number"}
           {...register("numeroDocumento")}
+          readOnly={isEditable}
         />
       </div>
       <div className="text-primario">Nombre</div>
@@ -46,6 +53,7 @@ const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
         <Input
           className="text-left border-primario"
           {...register("nombresCompletos", {required: true})}
+          readOnly={isEditable}
         />
       </div>
       <div className="flex">
@@ -58,6 +66,7 @@ const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
               type="date"
               className="border-primario"
               {...register("fechaNacimiento")}
+              readOnly={isEditable}
             />
           </div>
         </div>
@@ -67,13 +76,14 @@ const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
             <Input
               className="text-left border-primario"
               {...register("ciudadProcedencia")}
+              readOnly={isEditable}
             />
           </div>
         </div>
       </div>
       <div className="text-primario">Observaciones</div>
       <div className="rounded-lg border-1">
-        <Textarea {...register("observaciones")} />
+        <Textarea {...register("observaciones")} readOnly={isEditable}/>
       </div>
     </form>
   );
