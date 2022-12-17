@@ -135,15 +135,17 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle("fetchPisosAndHabitaciones", async (_, habitacionesFiltros: Prisma.HabitacionListRelationFilter) => {
+ipcMain.handle("fetchPisosAndHabitaciones", async (_, habitacionesFiltros: Prisma.HabitacionWhereInput) => {
+  console.log(habitacionesFiltros);
   return prisma.habitacionPiso.findMany({
     include: {
-      habitaciones: true,
+      habitaciones: {
+        where: habitacionesFiltros
+      },
+      // habitaciones: {
+      //   where: {banos: {equals: 2 }}
+      // },
     },
-    where: {
-      habitaciones: habitacionesFiltros
-    },
-  
   });
 });
 

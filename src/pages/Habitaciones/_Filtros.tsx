@@ -15,33 +15,41 @@ import BcCheckbox from "../../basic_components/BcCheckbox";
 import BcStateRoom from "../../basic_components/BcStateRoom";
 import BcTextAndCount from "../../basic_components/BcTextAndCount";
 import { BasicStateRoom } from "../../constants/enums/BasicStateRoom";
-import { ElementRef, useRef, useState } from "react";
-import {  useQuery } from "@tanstack/react-query";
+import { ElementRef, useRef, useState, useContext } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPisosAndHab } from "../../api/Habitacion";
+import { HabitacionesFiltroContext } from "./HabitacionesContext";
 
-let key = 0
+const filtros: { banos: { equals: number }; camas: { equals: number } } =
+  {} as any;
+
 
 const _Filtros = () => {
+  const queryClient = useQueryClient();
   const banosRef = useRef<ElementRef<typeof BcTextAndCount>>(null);
   const camasRef = useRef<ElementRef<typeof BcTextAndCount>>(null);
-  // const [filtros, setFiltros] = useState<{banos: number, camas: number}>({})
-  const {data} = useQuery(['pisos'], () => {
-    fetchPisosAndHab()
-  })
+  const habitacionFiltroContext = useContext(HabitacionesFiltroContext)
+  const [keyCama, setKeyCama] = useState(0)
+  const [keyBano, setKeyBano] = useState(1)
 
   const aplicarFiltros = () => {
-    const filtros:{banos: number, camas: number} = {} as any
-    if (banosRef.current?.value) 
-      filtros['banos'] = +banosRef.current?.value
+    if (banosRef.current?.value)
+      habitacionFiltroContext!.banos = { equals: +banosRef.current?.value };
     if (camasRef.current?.value)
-      filtros['camas'] = +camasRef.current?.value
-    // setFiltros(filtros)
-  }
+      habitacionFiltroContext!.camas = { equals: +camasRef.current?.value };
+    queryClient.invalidateQueries(["pisos"]);
+    console.log("test");
+  };
 
   const limpiarFiltros = () => {
-    banosRef.current!.value = ''
-    camasRef.current!.value = ''
-  }
+    habitacionFiltroContext!.banos = {} as any
+    habitacionFiltroContext!.camas = {} as any
+    banosRef.current!.value = "";
+    camasRef.current!.value = "";
+    setKeyBano((keyBano + 2) % 4)
+    setKeyCama((keyCama + 2) % 4)
+    queryClient.invalidateQueries(["pisos"]);
+  };
 
   return (
     <div className="shadow-lg my-3 rounded-lg">
@@ -70,9 +78,9 @@ const _Filtros = () => {
                 </Button>
               </Heading>
               {/* <Heading className='py-3 text-center' size='xs'> */}
-              <div className="py-3 text-center" key={key}>
-                <BcTextAndCount label="Baños Privados" ref={banosRef}/>
-                <BcTextAndCount label="Camas" ref={camasRef}/>
+              <div className="py-3 text-center">
+                <BcTextAndCount label="Baños Privados" ref={banosRef} key={keyBano} />
+                <BcTextAndCount label="Camas" ref={camasRef} key={keyCama}/>
                 {/* <BcCheckbox label="Tv" isActive={false} ref={tvRef}/>
                 <BcCheckbox label="Wifi" isActive={true} ref={wifiRef}/> */}
               </div>

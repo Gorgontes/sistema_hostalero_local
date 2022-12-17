@@ -14,14 +14,19 @@ import { fetchPisosAndHab } from "../../api/Habitacion";
 import Piso from "../../components/Habitaciones/Piso";
 import _Filtros from "./_Filtros";
 import _EstadosHabitaciones from "./_EstadosHabitaciones";
+import { useContext } from "react";
+import { HabitacionesFiltroContext } from "./HabitacionesContext";
 
 type Props = {};
 
 const HabitacionesPage = (props: Props) => {
-  const { data: habitaciones, isLoading } = useQuery(
-    ["pisos"],
-    () => fetchPisosAndHab()
-  );
+  const habitacionFiltroContext = useContext(HabitacionesFiltroContext);
+  const { data: habitaciones, isLoading } = useQuery(["pisos"], () => {
+    console.log("getting", habitacionFiltroContext);
+    const ans = fetchPisosAndHab(habitacionFiltroContext!);
+    console.log('ans', ans)
+    return ans;
+  });
   // const { isOpen, onOpen, onClose } = useDisclosure();
   console.log(habitaciones);
 
