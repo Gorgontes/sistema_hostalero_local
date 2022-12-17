@@ -12,7 +12,8 @@ const Error404 = () => {
                 items-end pb-10
                 text-6xl font-bold
                 font-arial
-            '>
+                text-primario
+                '>
                 No Disponible ...
             </div>
             <div className='flex justify-center  h-[40%] items-center '>
@@ -23,6 +24,7 @@ const Error404 = () => {
                 h-[30%] items-start
                 text-6xl font-bold
                 font-arial
+                text-primario
             '>
                 Próximamente! :D
             </div>
