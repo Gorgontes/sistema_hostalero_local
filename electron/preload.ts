@@ -45,7 +45,7 @@ const api = {
       ): Promise<HabitacionPiso> => {
         return ipcRenderer.invoke("postPiso", piso);
       },
-      fetchPisosAndHab: async (habitacionFiltro?: Prisma.HabitacionListRelationFilter): Promise<
+      fetchPisosAndHab: async (habitacionFiltro?: Prisma.HabitacionWhereInput): Promise<
         Array<
           Prisma.HabitacionPisoGetPayload<{ include: { habitaciones: true } }>
         >

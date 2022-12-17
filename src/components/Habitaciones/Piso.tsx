@@ -21,34 +21,10 @@ interface Props {
   piso: Awaited<ReturnType<typeof fetchPisoById>>;
 }
 
-const Piso: React.FC<Props> = (props) => {
+const Piso: React.FC<Props> = ({piso}) => {
   const queryClient = useQueryClient();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const {
-    data: piso,
-    isLoading,
-    isError,
-  } = useQuery(["piso", props.piso.id], () => fetchPisoById(props.piso.id), {
-    initialData: props.piso,
-    refetchOnMount: false,
-  });
-
-  const deletePiso = useMutation(deletePisoById, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["habitaciones"]);
-    },
-  });
-
-  if (isLoading) {
-    return <div>cargando...</div>;
-  }
-
-  if (isError) {
-    return <div>hubo un error!!!</div>;
-  }
-
-  console.log("habitaciones", props.piso.habitaciones);
 
   return (
     <>

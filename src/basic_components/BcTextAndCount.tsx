@@ -19,7 +19,7 @@ const BcTextAndCount = forwardRef<HTMLInputElement, Props>(({ label }, ref) => {
       <div className="text-primario">{label}</div>
       <div className="ml-auto w-24">
         <NumberInput max={999} min={0}>
-          <NumberInputField ref={ref}/>
+          <NumberInputField ref={ref} />
           <NumberInputStepper>
             <NumberIncrementStepper />
             <NumberDecrementStepper />
