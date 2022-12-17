@@ -43,25 +43,13 @@ const caja = {
 
     ]
 }
-const configuracion = {
-    "label": "Configuracion",
+const reportes = {
+    "label": "Reportes",
     "items": [
         {
-            "label": "confi",
-            "url": "---"
+            "label": "General",
+            "url": "/reportes-ver"
         },
-        {
-            "label": "confi 2",
-            "url": "---"
-        },
-        {
-            "label": "confi 4",
-            "url": "---"
-        },
-        {
-            "label": "confi 5",
-            "url": "---"
-        }
     ]
 }
 const historial = {
@@ -88,7 +76,7 @@ const NavBarHome = (props: Props) => {
         <div className="bg-primario flex" >
             <ButtonDropDown {...opciones} />
             <ButtonDropDown {...caja} />
-            <ButtonDropDown {...configuracion} />
+            <ButtonDropDown {...reportes} />
             <ButtonDropDown {...historial} />
             <ButtonDropDown {...acerca} />
             <ConnectionDrive />
