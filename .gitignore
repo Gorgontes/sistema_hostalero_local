@@ -1,4 +1,5 @@
 # Logs
+electron/credentials/token.json
 logs
 *.log
 npm-debug.log*

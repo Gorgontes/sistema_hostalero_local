@@ -58,6 +58,17 @@ const PisoEditor: React.FC<Props> = (props) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const {
+    isOpen: isOpenDeleteFloor,
+    onOpen: onOpenDeleteFloor,
+    onClose: onCloseDeleteFloor
+  } = useDisclosure()
+  const {
+    isOpen: isOpenDeleteRoom,
+    onOpen: onOpenDeleteRoom,
+    onClose: onCloseDeleteRoom
+  } = useDisclosure()
+
+  const {
     data: piso,
     isLoading,
     isError,
@@ -108,9 +119,42 @@ const PisoEditor: React.FC<Props> = (props) => {
           size={"lg"}
           variant={"outline"}
           icon={<DeleteIcon className="" />}
-          onClick={() => _deletePiso(props.piso.id)}
+          onClick={() => {
+            onOpenDeleteFloor()
+            // _deletePiso(props.piso.id)
+          }}
         />
       </div>
+
+      <Modal isOpen={isOpenDeleteFloor} onClose={onCloseDeleteFloor}>
+        <ModalOverlay />
+        <ModalContent width={450} className="!max-w-none">
+          <ModalHeader className="bg-primario text-background_main">Eliminar Piso</ModalHeader>
+          <ModalCloseButton className="!bg-rojo_suave text-background_main hover:bg-white" />
+          <ModalBody className="text-center">
+            <div className="text-3xl text-primario font-bold mb-5">¿Eliminar Piso?</div>
+            <div className="text-2xl font-semibold text-primario opacity-80">IMPORTANTE</div>
+            <div className="text-lg font-semibold text-primario opacity-70">Todas las habitaciones dentro de este piso serán eliminadas permanentemente.</div>
+          </ModalBody>
+          <ModalFooter className="mx-auto">
+
+            <Button width={"150px"} size={"lg"} colorScheme='black' variant='solid' mr={3} onClick={() => {
+              onCloseDeleteFloor();
+            }
+            }>
+              Cancelar
+            </Button>
+            <Button width={"150px"} size={"lg"} colorScheme='red' variant='solid' mr={3} onClick={() => {
+              onCloseDeleteFloor();
+              _deletePiso(props.piso.id)
+            }
+            }>
+              Si, Eliminar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <div className="p-4 flex flex-col">
         <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
           {piso.habitaciones.map((hab) => (
@@ -153,11 +197,42 @@ const PisoEditor: React.FC<Props> = (props) => {
                 }
                 habitacion={editableHab}
                 onDelete={() => {
-                  onClose();
-                  _deleteHabitacion(editableHab!.id);
+                  // onClose();
+                  onOpenDeleteRoom();
+                  // _deleteHabitacion(editableHab!.id);
                 }}
               />
             </ModalBody>
+          </ModalContent>
+        </Modal>
+
+        <Modal isOpen={isOpenDeleteRoom} onClose={onCloseDeleteRoom}>
+          <ModalOverlay />
+          <ModalContent width={450} className="!max-w-none">
+            <ModalHeader className="bg-primario text-background_main">Eliminar Habitación</ModalHeader>
+            <ModalCloseButton className="!bg-rojo_suave text-background_main hover:bg-white" />
+            <ModalBody className="text-center">
+              <div className="text-3xl text-primario font-bold mb-5">¿Eliminar Habitación?</div>
+              <div className="text-2xl font-semibold text-primario opacity-80">IMPORTANTE</div>
+              <div className="text-lg font-semibold text-primario opacity-70">Si esta habitación esta ocupada y/o reservada, se eliminarán esos datos</div>
+            </ModalBody>
+            <ModalFooter className="mx-auto">
+
+              <Button width={"150px"} size={"lg"} colorScheme='black' variant='solid' mr={3} onClick={() => {
+                onCloseDeleteRoom();
+              }
+              }>
+                Cancelar
+              </Button>
+              <Button width={"150px"} size={"lg"} colorScheme='red' variant='solid' mr={3} onClick={() => {
+                onClose();
+                onCloseDeleteRoom();
+                _deleteHabitacion(editableHab!.id);
+              }
+              }>
+                Si, Eliminar
+              </Button>
+            </ModalFooter>
           </ModalContent>
         </Modal>
       </div>

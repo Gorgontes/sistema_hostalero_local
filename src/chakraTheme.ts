@@ -9,7 +9,7 @@ import { extendTheme, withDefaultColorScheme, type ThemeConfig } from '@chakra-u
 const theme = extendTheme(
   {
     colors: {
-      primary : {
+      primary: {
         500: '#43718f'
       },
       green: {
@@ -23,6 +23,9 @@ const theme = extendTheme(
       },
       purple: {
         500: '#85408B'
+      },
+      black: {
+        500: '#000000'
       }
     },
   },
