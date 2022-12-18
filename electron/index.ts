@@ -1,6 +1,6 @@
 // Native
 import { join } from "path";
-import { sincronizar, syncSheet } from "./googleapi";
+import { syncSheet } from "./googleapi";
 
 // Packages
 import { BrowserWindow, app, ipcMain } from "electron";
@@ -204,8 +204,3 @@ ipcMain.handle("finalizarReserva",async (_, reserva: Reserva) => {
 ipcMain.handle("sincronizar", async (_,fileId: string, nameFile: string) => {
   await syncSheet(fileId, nameFile);
 })
-
-// ipcMain.handle
-// ipcMain.handle("getRevervaById", async (_, id: number) => {
-//   return prisma.reserva;
-// });
