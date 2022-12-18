@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { ElementRef, useContext, useRef } from "react";
-import { postReserva } from "../../api/Reserva";
+// import { postReserva } from "../../api/Reserva";
 import BcDetallesHabitacion from "../../basic_components/BcDetallesHabitacion";
 import BcHabitacionNumber from "../../basic_components/BcHabitacionNumber";
 import BcHuespedDatosFormLeft from "../../basic_components/BcHuespedDatosFormLeft";
@@ -40,7 +40,7 @@ const HabitacionReservaForm = (props: Props) => {
           numeroDocumento: datosHuesped?.numeroDocumento!,
         },
       },
-      habitacion: { connect: {id: habitacionContext?.habitacion.id!}},
+      habitacion: { connect: { id: habitacionContext?.habitacion.id! } },
       fechaIngreso: datosEstadia?.fechaIngreso,
       noches: datosEstadia?.noches,
       precio: datosEstadia?.precio,
@@ -60,7 +60,7 @@ const HabitacionReservaForm = (props: Props) => {
           numeroDocumento: datosHuesped?.numeroDocumento!,
         },
       },
-      habitacion: { connect: {id: habitacionContext?.habitacion.id!}},
+      habitacion: { connect: { id: habitacionContext?.habitacion.id! } },
       fechaIngreso: datosEstadia?.fechaIngreso,
       noches: datosEstadia?.noches,
       precio: datosEstadia?.precio,
@@ -118,7 +118,7 @@ const HabitacionReservaForm = (props: Props) => {
       </div>
       <div className="flex">
         <div className="flex-1 mr-5">
-          <BcHuespedDatosFormLeft ref={huespedFormRef} status={currentState}/>
+          <BcHuespedDatosFormLeft ref={huespedFormRef} status={currentState} />
         </div>
         <div className="flex-1">
           <BcHuespedDatosFormRight ref={estadiaFormRef}>
