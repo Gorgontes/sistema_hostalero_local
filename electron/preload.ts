@@ -1,5 +1,5 @@
 import { ipcRenderer, contextBridge } from "electron";
-import { Prisma, HabitacionPiso } from "@prisma/client";
+import { Prisma, HabitacionPiso, Habitacion } from "@prisma/client";
 
 declare global {
   interface Window {
@@ -10,15 +10,18 @@ declare global {
 
 const api = {
   googleapi: {
-    sincronizar: () => {
-      ipcRenderer.invoke("sincronizar",);
-    }
+    sincronizar: (fileId: string, nameSheet: string) => {
+      ipcRenderer.invoke("sincronizar", fileId, nameSheet);
+    },
   },
   db: {
     reserva: {
-      postReserva: async (reserva: Prisma.ReservaCreateInput) => {
-        return ipcRenderer.invoke("postReserva", reserva)
-      }
+      reservarHabitacion: async (
+        datosReserva: Prisma.ReservaCreateInput,
+        habitacion: Habitacion
+      ) => {
+        return ipcRenderer.invoke("reservarHabitacion", datosReserva, habitacion);
+      },
     },
     users: {
       createUser: async (user: Prisma.UserCreateInput) => {
@@ -36,13 +39,14 @@ const api = {
         return ipcRenderer.invoke("postHabitacion", habitacion);
       },
       updateHabitacion: async (
-        habitacion: Prisma.HabitacionUpdateInput, id: number
+        habitacion: Prisma.HabitacionUpdateInput,
+        id: number
       ) => {
         return ipcRenderer.invoke("updateHabitacion", habitacion, id);
       },
       deleteHabitacionById: async (id: number) => {
-        return ipcRenderer.invoke("deleteHabitacionById", id)
-      }
+        return ipcRenderer.invoke("deleteHabitacionById", id);
+      },
     },
     pisos: {
       postPiso: async (
@@ -50,12 +54,17 @@ const api = {
       ): Promise<HabitacionPiso> => {
         return ipcRenderer.invoke("postPiso", piso);
       },
-      fetchPisosAndHab: async (habitacionFiltro?: Prisma.HabitacionWhereInput): Promise<
+      fetchPisosAndHab: async (
+        habitacionFiltro?: Prisma.HabitacionWhereInput
+      ): Promise<
         Array<
           Prisma.HabitacionPisoGetPayload<{ include: { habitaciones: true } }>
         >
       > => {
-        return ipcRenderer.invoke("fetchPisosAndHabitaciones", habitacionFiltro);
+        return ipcRenderer.invoke(
+          "fetchPisosAndHabitaciones",
+          habitacionFiltro
+        );
       },
       deletePisoById: async (id: number) => {
         return ipcRenderer.invoke("deletePisoById", id);

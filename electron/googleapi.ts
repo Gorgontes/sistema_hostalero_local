@@ -2,7 +2,6 @@ import { google } from "googleapis";
 const sheets = google.sheets("v4");
 
 export async function sincronizar() {
-  console.log("llegando");
   const authClient = await authorize();
   const request = {
     spreadsheetId: "1uoEV2fmrsqBTIUfJ4NLF2GHV4S6luDA6qIsDIFw31mQ", // TODO: Update placeholder value.
@@ -99,3 +98,30 @@ async function listMajors(auth: OAuth2Client) {
 }
 
 authorize().then(listMajors).catch(console.error);
+
+
+export async function syncSheet(fileId: string, sheetName: string) {
+  const authClient = await authorize();
+  const request = {
+    spreadsheetId:fileId,
+    range: sheetName,
+
+    valueInputOption: "RAW", // TODO: Update placeholder value.
+
+    resource: {
+      range:sheetName,
+      majorDimension: "ROWS",
+      values: [['nombre','apellidos'], ['luis','motesinos'],['kleyson', 'huanatico'],],
+    },
+
+    auth: authClient,
+  };
+
+  try {
+    const response = (await sheets.spreadsheets.values.update(request)).data;
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  } catch (err) {
+    console.error(err);
+  }
+}

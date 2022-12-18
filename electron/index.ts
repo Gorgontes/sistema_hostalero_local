@@ -1,6 +1,6 @@
 // Native
 import { join } from "path";
-import { sincronizar } from "./googleapi";
+import { sincronizar, syncSheet } from "./googleapi";
 
 // Packages
 import { BrowserWindow, app, ipcMain } from "electron";
@@ -69,11 +69,6 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-// listen the channel `message` and resend the received message to the renderer process
 
 ipcMain.handle("createUser", async (_, userData: Prisma.UserCreateInput) => {
   // setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
@@ -194,20 +189,20 @@ ipcMain.handle(
   }
 );
 
-ipcMain.handle("finalizarReservacion",async (_, reserva: Reserva) => {
+ipcMain.handle("finalizarReserva",async (_, reserva: Reserva) => {
   prisma.habitacion.update({
     where: {
       id: reserva.habitacionId
     },
     data: {
-      // reservaActual: {delete:}
+      reservaActual: {delete: true}
     }
   })
   
 })
 
-ipcMain.handle("sincronizar", async (_,) => {
-  await sincronizar();
+ipcMain.handle("sincronizar", async (_,fileId: string, nameFile: string) => {
+  await syncSheet(fileId, nameFile);
 })
 
 // ipcMain.handle
