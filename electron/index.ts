@@ -211,6 +211,6 @@ ipcMain.handle("sincronizar", async (_,) => {
 })
 
 // ipcMain.handle
-ipcMain.handle("getRevervaById", async (_, id: number) => {
-  return prisma.reserva;
-});
+// ipcMain.handle("getRevervaById", async (_, id: number) => {
+//   return prisma.reserva;
+// });
