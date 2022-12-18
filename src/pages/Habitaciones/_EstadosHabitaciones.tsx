@@ -13,7 +13,15 @@ import BcStateRoom from "../../basic_components/BcStateRoom";
 
 import { BasicStateRoom } from "../../constants/enums/BasicStateRoom";
 
-const _EstadosHabitaciones = () => {
+type Props = {
+  estados: {
+    ocupado: number,
+    reservado: number,
+    libre: number,
+  }
+}
+
+const _EstadosHabitaciones = (props: Props) => {
   return (
     <div className="shadow-lg my-3 rounded-lg">
       <Card>
@@ -29,21 +37,21 @@ const _EstadosHabitaciones = () => {
               <Heading className="py-3 text-center" size="xs">
                 <BcStateRoom
                   label="Libre"
-                  count={10}
+                  count={props.estados.libre}
                   typeIcon={BasicStateRoom.free}
                 />
               </Heading>
               <Heading className="py-3 text-center" size="xs">
                 <BcStateRoom
                   label="Reservado"
-                  count={5}
+                  count={props.estados.reservado}
                   typeIcon={BasicStateRoom.reserved}
                 />
               </Heading>
               <Heading className="py-3 text-center" size="xs">
                 <BcStateRoom
                   label="Ocupado"
-                  count={8}
+                  count={props.estados.ocupado}
                   typeIcon={BasicStateRoom.occupied}
                 />
               </Heading>

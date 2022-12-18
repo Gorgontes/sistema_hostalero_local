@@ -1,5 +1,5 @@
 import { ipcRenderer, contextBridge } from "electron";
-import { Prisma, HabitacionPiso, Habitacion } from "@prisma/client";
+import { Prisma, HabitacionPiso, Habitacion, Reserva } from "@prisma/client";
 
 declare global {
   interface Window {
@@ -15,12 +15,42 @@ const api = {
     },
   },
   db: {
+    reportes: {
+      getReporte: async (): Promise<
+        Prisma.HabitacionGetPayload<{
+          include: {
+            reservaActual: {
+              include: {
+                cliente: true;
+              };
+            };
+          };
+        }>
+      > => {
+        return ipcRenderer.invoke("getReporte");
+      },
+    },
     reserva: {
+      getReservaId: async (id: number) => {
+        return ipcRenderer.invoke("getReservaById", id);
+      },
       reservarHabitacion: async (
-        datosReserva: Prisma.ReservaCreateInput,
-        habitacion: Habitacion
+        datosReserva: Prisma.ReservaCreateWithoutHabitacionInput,
+        habitacion: Habitacion,
+        estado: string
       ) => {
-        return ipcRenderer.invoke("reservarHabitacion", datosReserva, habitacion);
+        return ipcRenderer.invoke(
+          "reservarHabitacion",
+          datosReserva,
+          habitacion,
+          estado
+        );
+      },
+      ocuparReserva: async (habitacion: Habitacion) => {
+        return ipcRenderer.invoke("ocuparReservaPendiente", habitacion);
+      },
+      finalizarReserva: async (reserva: Reserva) => {
+        return ipcRenderer.invoke("finalizarReserva", reserva);
       },
     },
     users: {

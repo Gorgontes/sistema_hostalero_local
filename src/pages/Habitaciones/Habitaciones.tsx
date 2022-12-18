@@ -14,21 +14,30 @@ import { fetchPisosAndHab } from "../../api/Habitacion";
 import Piso from "../../components/Habitaciones/Piso";
 import _Filtros from "./_Filtros";
 import _EstadosHabitaciones from "./_EstadosHabitaciones";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { HabitacionesFiltroContext } from "./HabitacionesContext";
 
 type Props = {};
 
 const HabitacionesPage = (props: Props) => {
   const habitacionFiltroContext = useContext(HabitacionesFiltroContext);
-  const { data: habitaciones, isLoading } = useQuery(["pisos"], () => {
-    console.log("getting", habitacionFiltroContext);
-    const ans = fetchPisosAndHab(habitacionFiltroContext!);
-    console.log('ans', ans)
-    return ans;
-  });
-  // const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log(habitaciones);
+  const [estados, setEstados] = useState({ocupado: 1,reservado: 0, libre: 0});
+  const { data: pisos, isLoading } = useQuery(["pisos"], async() => {
+    const pisos = await fetchPisosAndHab(habitacionFiltroContext!);
+    const estados = {
+      ocupado: 0,
+      reservado: 0,
+      libre: 0,
+    };
+    for (const piso of pisos ?? []) {
+      piso.habitaciones.forEach((habitacion) => {
+        return estados[habitacion.estado as keyof typeof estados]++;
+      });
+    }
+    setEstados({ ...estados })
+    return pisos
+  }, {onSuccess: () => {
+  }});
 
   if (isLoading) {
     return <span>Loading...</span>;
@@ -51,14 +60,14 @@ const HabitacionesPage = (props: Props) => {
           </InputGroup> */}
         </div>
         <div className="grow h-0 space-y-4">
-          {habitaciones!.map((habitacion) => (
+          {pisos!.map((habitacion) => (
             <Piso piso={habitacion} key={habitacion.id} />
           ))}
         </div>
       </div>
       <div className="">
         <_Filtros />
-        <_EstadosHabitaciones />
+        <_EstadosHabitaciones estados={estados} />
       </div>
     </div>
   );

@@ -137,9 +137,6 @@ ipcMain.handle(
         habitaciones: {
           where: habitacionesFiltros,
         },
-        // habitaciones: {
-        //   where: {banos: {equals: 2 }}
-        // },
       },
     });
   }
@@ -168,39 +165,93 @@ ipcMain.handle("deleteHabitacionById", async (_, id: number) => {
   });
 });
 
-
 ipcMain.handle(
   "reservarHabitacion",
   async (
     _,
-    datosReserva: Prisma.ReservaCreateInput,
-    habitacion: Habitacion
+    datosReserva: Prisma.ReservaCreateWithoutHabitacionInput,
+    habitacion: Habitacion,
+    estado: "ocupado" | "reservado"
   ) => {
+    const { habitacionActual, ..._datosReserva } = datosReserva;
     if (habitacion.reservaId === null)
       return prisma.habitacion.update({
         data: {
-          reservaActual: { create: datosReserva },
+          reservaActual: {
+            create: {
+              ..._datosReserva,
+              habitacion: {
+                connect: {
+                  id: habitacion.id,
+                },
+              },
+            },
+          },
+          estado
         },
         where: {
           id: habitacion.id,
         },
       });
-    throw Error("La habitacion ya tiene una reservacion o esta ocupada")
+    throw Error("La habitacion ya tiene una reservacion o esta ocupada");
   }
 );
 
-ipcMain.handle("finalizarReserva",async (_, reserva: Reserva) => {
-  prisma.habitacion.update({
+ipcMain.handle(
+  "ocuparReservaPendiente",
+  async (_, habitacion: Habitacion) => {
+    if (habitacion.reservaId != null) {
+      const res = await prisma.habitacion.update({
+        data: {
+          estado: "ocupado",
+          reservaActual: { update: { fechaIngreso: new Date() } },
+        },
+        where: {
+          id: habitacion.id,
+        },
+      });
+      console.log(res)
+      return res
+    }
+    throw Error('esta habitacion no tiene una reserva actual')
+  }
+);
+
+ipcMain.handle("finalizarReserva", async (_, reserva: Reserva) => {
+  return prisma.habitacion.update({
     where: {
-      id: reserva.habitacionId
+      id: reserva.habitacionId,
     },
     data: {
-      reservaActual: {delete: true}
+      reservaActual: { disconnect: true },
+      estado: 'libre'
+    },
+  });
+});
+
+ipcMain.handle("sincronizar", async (_, fileId: string, nameFile: string) => {
+  await syncSheet(fileId, nameFile);
+});
+
+ipcMain.handle("getReservaById", async(_, id: number) => {
+  return prisma.reserva.findFirst({
+    where: {
+      id: id
+    },
+    include: {
+      cliente: true
     }
   })
-  
 })
 
-ipcMain.handle("sincronizar", async (_,fileId: string, nameFile: string) => {
-  await syncSheet(fileId, nameFile);
+ipcMain.handle('getReporte', async () => {
+  return prisma.habitacion.findMany({
+    include: {
+      reservaActual: {
+        include: {
+          cliente: true
+        }
+      }
+    }
+  })
 })

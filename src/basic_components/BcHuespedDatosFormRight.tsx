@@ -16,12 +16,14 @@ import {
   NumberInputStepper,
   Textarea,
 } from "@chakra-ui/react";
+import { Reserva } from "@prisma/client";
 import { ReactNode, useContext, useState, forwardRef, useImperativeHandle } from "react";
 import { HabitacionContext } from "../components/Habitaciones/HabitacionCardContext";
 import { BasicStateRoom } from "../constants/enums/BasicStateRoom";
 
 type Props = {
   children: () => ReactNode;
+  reserva?: Reserva
 };
 
 type DatosHuesped = {
@@ -31,7 +33,6 @@ type DatosHuesped = {
 }
 interface Handlers {
   getDatos: () => DatosHuesped;
-  // getDatos: () => void;
 }
 
 const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) => {
@@ -58,6 +59,7 @@ const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) =
   )
   fechaEstimada.setDate(fechaIngreso.getDate() + noches);
   return (
+    <>
     <div className="">
       <div className="text-primario text-3xl my-3 font-bold">
         Datos de Estadía
@@ -94,7 +96,7 @@ const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) =
           {fechaEstimada.toLocaleDateString("es-PE")}
         </div>
       </div>
-      <div className="flex items-center mt-20 text-center">
+      <div className="flex items-center mt-2 text-center">
         <div className="text-primario mr-5">Costo</div>
         {isCostEditable ? (
           <NumberInput
@@ -125,7 +127,9 @@ const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) =
       </div>
       {children()}
     </div>
+    </>
   );
+
 });
 
 export default BcHuespedDatosFormRight;

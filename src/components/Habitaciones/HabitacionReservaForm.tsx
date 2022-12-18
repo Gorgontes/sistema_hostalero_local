@@ -1,6 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { ElementRef, useContext, useRef } from "react";
-import { postReserva } from "../../api/Reserva";
+import React, { ElementRef, useContext, useRef, useState } from "react";
+import {
+  finalizarReserva,
+  getReservaById,
+  ocuparReserva,
+  reservarHabitacion,
+} from "../../api/Reserva";
+// import { postReserva } from "../../api/Reserva";
 import BcDetallesHabitacion from "../../basic_components/BcDetallesHabitacion";
 import BcHabitacionNumber from "../../basic_components/BcHabitacionNumber";
 import BcHuespedDatosFormLeft from "../../basic_components/BcHuespedDatosFormLeft";
@@ -16,62 +22,97 @@ type Props = {
 };
 
 const HabitacionReservaForm = (props: Props) => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const habitacionContext = useContext(HabitacionContext);
   // const {data: reserva} = useQuery()
   const huespedFormRef =
     useRef<ElementRef<typeof BcHuespedDatosFormLeft>>(null);
   const estadiaFormRef =
     useRef<ElementRef<typeof BcHuespedDatosFormRight>>(null);
-
-  const { mutate: _postReserva } = useMutation(postReserva, {
-    onSuccess() {
-      queryClient.invalidateQueries(["pisos"])
+  console.log("form render", habitacionContext?.habitacion.id);
+  const { data: reserva } = useQuery(
+    ["reserva", habitacionContext?.habitacion.id],
+    async () => {
+      if (habitacionContext?.habitacion.reservaId != null) {
+        const res = await getReservaById(
+          habitacionContext!.habitacion.reservaId
+        );
+        setCargo(!cargo);
+        return res;
+      }
+      return null;
     }
+  );
+
+  const { mutate: _reservarHabitacion } = useMutation(reservarHabitacion, {
+    onSuccess() {
+      queryClient.invalidateQueries(["pisos"]);
+    },
   });
+  const { mutate: _ocuparHabitacion } = useMutation(ocuparReserva, {
+    onSuccess() {
+      queryClient.invalidateQueries(["pisos"]);
+    },
+  });
+  const { mutate: _finalizarReserva } = useMutation(finalizarReserva, {
+    onSuccess() {
+      queryClient.invalidateQueries(["pisos"]);
+    },
+  });
+  console.log("habitacion context", habitacionContext?.habitacion);
+  const [cargo, setCargo] = useState(true);
   const onOcupar = () => {
     const datosHuesped = huespedFormRef.current?.getDatosHuesped();
     const datosEstadia = estadiaFormRef.current?.getDatos();
-    _postReserva({
-      cliente: {
-        create: {
-          ciudadProcedencia: datosHuesped?.ciudadProcedencia,
-          nombresCompletos: datosHuesped?.nombresCompletos!,
-          numeroDocumento: datosHuesped?.numeroDocumento!,
+    if (habitacionContext?.habitacion?.reservaId === null)
+      _reservarHabitacion({
+        datosReserva: {
+          cliente: {
+            create: {
+              ciudadProcedencia: datosHuesped?.ciudadProcedencia,
+              nombresCompletos: datosHuesped?.nombresCompletos!,
+              numeroDocumento: datosHuesped?.numeroDocumento!,
+            },
+          },
+          fechaIngreso: new Date(),
+          noches: datosEstadia?.noches,
+          precio: datosEstadia?.precio,
+          observacion: datosHuesped?.observaciones,
         },
-      },
-      habitacion: { connect: {id: habitacionContext?.habitacion.id!}},
-      fechaIngreso: datosEstadia?.fechaIngreso,
-      noches: datosEstadia?.noches,
-      precio: datosEstadia?.precio,
-      observacion: datosHuesped?.observaciones
-    });
-    props.onClose()
+        habitacion: habitacionContext!?.habitacion,
+        estado: "ocupado",
+      });
+    else _ocuparHabitacion(habitacionContext!.habitacion);
+
+    props.onClose();
   };
 
   const onReservar = () => {
     const datosHuesped = huespedFormRef.current?.getDatosHuesped();
     const datosEstadia = estadiaFormRef.current?.getDatos();
-    _postReserva({
-      cliente: {
-        create: {
-          ciudadProcedencia: datosHuesped?.ciudadProcedencia,
-          nombresCompletos: datosHuesped?.nombresCompletos!,
-          numeroDocumento: datosHuesped?.numeroDocumento!,
+    _reservarHabitacion({
+      datosReserva: {
+        cliente: {
+          create: {
+            ciudadProcedencia: datosHuesped?.ciudadProcedencia,
+            nombresCompletos: datosHuesped?.nombresCompletos!,
+            numeroDocumento: datosHuesped?.numeroDocumento!,
+          },
         },
+        noches: datosEstadia?.noches,
+        precio: datosEstadia?.precio,
+        observacion: datosHuesped?.observaciones,
+        fechaReserva: new Date(),
       },
-      habitacion: { connect: {id: habitacionContext?.habitacion.id!}},
-      fechaIngreso: datosEstadia?.fechaIngreso,
-      noches: datosEstadia?.noches,
-      precio: datosEstadia?.precio,
-      observacion: datosHuesped?.observaciones,
-      fechaReserva: new Date()
+      habitacion: habitacionContext!?.habitacion,
+      estado: "ocupado",
     });
-    props.onClose()
+    props.onClose();
   };
 
   const onFinalizar = () => {
-    console.log("finalizando");
+    if (reserva) _finalizarReserva(reserva);
+    props.onClose();
   };
 
   let currentState: BasicStateRoom;
@@ -118,7 +159,13 @@ const HabitacionReservaForm = (props: Props) => {
       </div>
       <div className="flex">
         <div className="flex-1 mr-5">
-          <BcHuespedDatosFormLeft ref={huespedFormRef} status={currentState}/>
+          <BcHuespedDatosFormLeft
+            ref={huespedFormRef}
+            status={currentState}
+            reserva={reserva}
+            huesped={reserva?.cliente}
+            key={reserva?.cliente?.id}
+          />
         </div>
         <div className="flex-1">
           <BcHuespedDatosFormRight ref={estadiaFormRef}>
@@ -136,6 +183,7 @@ const HabitacionReservaForm = (props: Props) => {
         </div>
       </div>
       <div className="mt-10"></div>
+      <input type="text" />
     </div>
   );
 };
