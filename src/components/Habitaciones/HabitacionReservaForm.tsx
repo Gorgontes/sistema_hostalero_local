@@ -105,7 +105,7 @@ const HabitacionReservaForm = (props: Props) => {
         fechaReserva: new Date(),
       },
       habitacion: habitacionContext!?.habitacion,
-      estado: "ocupado",
+      estado: "reservado",
     });
     props.onClose();
   };

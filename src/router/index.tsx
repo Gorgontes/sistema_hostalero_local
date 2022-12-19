@@ -26,8 +26,3 @@ export default createHashRouter([
     element: <Error404 />
   },
 ])
-/* export default createBrowserRouter(
-  createRoutesFromElements((
-      <Route path={ ["/"] } element={<HabitacionesPage/>}/> 
-  ))
-) */

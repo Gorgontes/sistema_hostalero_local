@@ -64,7 +64,8 @@
     "vite": "^3.1.0"
   },
   "build": {
-    "appId": "sistema-hotelv1",
+    "appId": "com.lastpangos.sistemas_hotel",
+    "productName": "Sistema de Hotel",
     "asar": true,
     "dmg": {
       "contents": [
@@ -94,6 +95,7 @@
             "node_modules/.prisma/**/*",
             "node_modules/@prisma/client/**/*"
         ]
+
     },
     "files": [
       "main",

@@ -29,6 +29,7 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, "preload.js"),
     },
+    autoHideMenuBar: true,
   });
 
   const port = process.env.PORT || 3000;
