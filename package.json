@@ -88,7 +88,12 @@
     },
     "win": {
       "target": "NSIS",
-      "icon": "build/logo.ico"
+      "icon": "build/logo.ico",
+      "extraResources": [
+            "prisma/**/*",
+            "node_modules/.prisma/**/*",
+            "node_modules/@prisma/client/**/*"
+        ]
     },
     "files": [
       "main",

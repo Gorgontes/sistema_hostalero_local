@@ -1,10 +1,10 @@
-import { createBrowserRouter, createRoutesFromElements, Route } from "react-router-dom"
+import { createBrowserRouter, createHashRouter } from "react-router-dom"
 import EditarHabitaciones from "../pages/EditarHabitaciones"
 import HabitacionesPage from "../pages/Habitaciones/Habitaciones"
 import ReportesVer from "../pages/Reportes/ReportesVer"
 import Error404 from "../pages/Error404/Error404"
 
-export default createBrowserRouter([
+export default createHashRouter([
   {
     path: "/",
     element: <HabitacionesPage />

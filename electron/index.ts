@@ -5,9 +5,12 @@ import { syncSheet } from "./googleapi";
 // Packages
 import { BrowserWindow, app, ipcMain } from "electron";
 import isDev from "electron-is-dev";
-import installExtension, {
-  REACT_DEVELOPER_TOOLS,
-} from "electron-devtools-installer";
+if (isDev) {
+  var {default: installExtension, REACT_DEVELOPER_TOOLS} = require("electron-devtools-installer")
+// import installExtension, {
+//   REACT_DEVELOPER_TOOLS,
+// } from "electron-devtools-installer";
+}
 
 // Prisma
 import { PrismaClient, Prisma, Habitacion, Reserva } from "@prisma/client";
@@ -58,7 +61,6 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  console.log(`el id de la extension es: ${REACT_DEVELOPER_TOOLS.id}`);
   createWindow();
 
   app.on("activate", () => {
