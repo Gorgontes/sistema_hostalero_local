@@ -14,7 +14,7 @@ type DatosHuesped = {
   numeroDocumento: string;
   nombresCompletos: string;
   ciudadProcedencia?: string;
-  fechaNacimiento: string;
+  fechaNacimiento: Date | null | string;
   observaciones: string;
 };
 
@@ -25,10 +25,10 @@ interface Handlers {
 const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
   const disabled = props.reserva != null;
   let defaultValues: DatosHuesped | undefined = undefined
-  console.log(props.huesped)
+  console.log('left component', props.huesped?.fechaNacimiento)
   if(disabled && props.huesped != undefined) 
     defaultValues = {
-      fechaNacimiento: props.huesped!.fechaNacimiento?.toString() ?? '',
+      fechaNacimiento: props.huesped!.fechaNacimiento?.toISOString().slice(0,10) ?? '',
       nombresCompletos: props.huesped!.nombresCompletos,
       numeroDocumento: props.huesped!.numeroDocumento,
       observaciones: "",
@@ -38,9 +38,13 @@ const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
   const isEditable = props.status !== BasicStateRoom.free;
   useImperativeHandle(
     ref,
-    () => ({
-      getDatosHuesped: getValues,
-    }),
+    () => ( {
+      getDatosHuesped: () => {
+        const {fechaNacimiento, ...payload} = getValues()
+        console.log('fechaNacimiento',fechaNacimiento, typeof fechaNacimiento);
+        return getValues()
+      },
+    }  ),
     []
   );
   return (
@@ -78,7 +82,7 @@ const BcHuespedDatosFormLeft = forwardRef<Handlers, Props>((props, ref) => {
               size="md"
               type="date"
               className="border-primario"
-              {...register("fechaNacimiento")}
+              {...register("fechaNacimiento", {valueAsDate: true})}
               readOnly={isEditable}
               disabled={disabled}
             />

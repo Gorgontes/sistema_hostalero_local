@@ -72,6 +72,7 @@ const HabitacionReservaForm = (props: Props) => {
               ciudadProcedencia: datosHuesped?.ciudadProcedencia,
               nombresCompletos: datosHuesped?.nombresCompletos!,
               numeroDocumento: datosHuesped?.numeroDocumento!,
+            fechaNacimiento: datosHuesped?.fechaNacimiento
             },
           },
           fechaIngreso: new Date(),
@@ -97,6 +98,7 @@ const HabitacionReservaForm = (props: Props) => {
             ciudadProcedencia: datosHuesped?.ciudadProcedencia,
             nombresCompletos: datosHuesped?.nombresCompletos!,
             numeroDocumento: datosHuesped?.numeroDocumento!,
+            fechaNacimiento: datosHuesped?.fechaNacimiento
           },
         },
         noches: datosEstadia?.noches,

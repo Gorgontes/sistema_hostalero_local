@@ -39,6 +39,9 @@ const api = {
         habitacion: Habitacion,
         estado: string
       ) => {
+        // if(typeof datosReserva.cliente.create?.fechaNacimiento == 'object')
+        //   datosReserva.cliente.create.fechaNacimiento = datosReserva.cliente.create?.fechaNacimiento?.getTime()!
+        // console.warn('prelaod', datosReserva.cliente)
         return ipcRenderer.invoke(
           "reservarHabitacion",
           datosReserva,

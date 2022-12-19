@@ -1,4 +1,9 @@
 import { google } from "googleapis";
+import * as fs from "fs";
+import * as path from "path";
+import * as process from "process";
+import { authenticate } from "@google-cloud/local-auth";
+import { OAuth2Client } from "google-auth-library";
 const sheets = google.sheets("v4");
 
 export async function sincronizar() {
@@ -28,11 +33,6 @@ export async function sincronizar() {
   }
 }
 
-import * as fs from "fs";
-import * as path from "path";
-import * as process from "process";
-import { authenticate } from "@google-cloud/local-auth";
-import { OAuth2Client } from "google-auth-library";
 
 const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 const TOKEN_PATH = path.join(process.cwd(), "/electron/credentials/token.json");
@@ -79,6 +79,7 @@ async function authorize() {
   return client;
 }
 
+// @ts-ignore
 async function listMajors(auth: OAuth2Client) {
   const sheets = google.sheets({ version: "v4", auth });
   const res = await sheets.spreadsheets.values.get({
@@ -97,7 +98,7 @@ async function listMajors(auth: OAuth2Client) {
   });
 }
 
-authorize().then(listMajors).catch(console.error);
+// authorize().then(listMajors).catch(console.error);
 
 
 export async function syncSheet(fileId: string, sheetName: string) {
@@ -119,7 +120,6 @@ export async function syncSheet(fileId: string, sheetName: string) {
 
   try {
     const response = (await sheets.spreadsheets.values.update(request)).data;
-    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   } catch (err) {
     console.error(err);

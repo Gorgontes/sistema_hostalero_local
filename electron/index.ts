@@ -177,6 +177,7 @@ ipcMain.handle(
     estado: "ocupado" | "reservado"
   ) => {
     const { habitacionActual, ..._datosReserva } = datosReserva;
+    console.log(datosReserva.cliente.create)
     if (habitacion.reservaId === null)
       return prisma.habitacion.update({
         data: {
