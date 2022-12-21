@@ -23,7 +23,7 @@ import { BasicStateRoom } from "../constants/enums/BasicStateRoom";
 
 type Props = {
   children: () => ReactNode;
-  reserva?: Reserva
+  reserva?: Reserva;
 };
 
 type DatosHuesped = {
@@ -35,29 +35,38 @@ interface Handlers {
   getDatos: () => DatosHuesped;
 }
 
-const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) => {
+const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children, reserva}, ref) => {
   const habitacionContext = useContext(HabitacionContext);
   const [fechaIngreso, setFechaIngreso] = useState<Date>(new Date());
-  const [noches, setNoches] = useState(1);
+  const [noches, setNoches] = useState(() => {
+      if(habitacionContext?.habitacion.estado === "libre")
+        return 1
+      return reserva?.noches ?? undefined
+  });
   const [isCostEditable, setIsCostEditable] = useState(
     () => !!!habitacionContext?.habitacion.precioReferencial
   );
   const fechaEstimada = new Date();
   const [precio, setPrecio] = useState(
-    habitacionContext?.habitacion.precioReferencial ?? undefined
+    () => {
+      if(habitacionContext?.habitacion.estado === "libre")
+        return habitacionContext?.habitacion.precioReferencial?.toFixed(2)
+      return reserva?.precio?.toFixed(2)
+    }
   );
+  console.log('reserva', reserva)
   useImperativeHandle(
     ref,
     () => ({
       getDatos: () => {
         return {
-          precio: precio!, fechaIngreso, noches: noches!
+          precio: parseFloat(precio!), fechaIngreso, noches: noches!
         }
       }
     }),
-    [],
+    [precio, noches, fechaIngreso],
   )
-  fechaEstimada.setDate(fechaIngreso.getDate() + noches);
+  fechaEstimada.setDate(fechaIngreso.getDate() + noches!);
   return (
     <>
     <div className="">
@@ -73,6 +82,7 @@ const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) =
             type="date"
             value={fechaIngreso.toISOString().split("T").at(0)}
             onChange={(e) => setFechaIngreso(new Date(e.currentTarget.value))}
+            isDisabled={habitacionContext?.habitacion.estado === 'ocupado'}
           />
         </div>
         <div className="text-primario mr-2">Noches</div>
@@ -81,6 +91,7 @@ const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) =
             min={1}
             value={noches}
             onChange={(_, noches) => setNoches(noches)}
+            isDisabled={habitacionContext?.habitacion.estado === 'ocupado'}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -102,8 +113,9 @@ const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) =
           <NumberInput
             onBlur={() => setIsCostEditable(false)}
             className={"w-36"}
-            value={precio}
-            onChange={(_, val) => setPrecio(val)}
+            // value={precio}
+            defaultValue={precio ?? undefined}
+            onChange={val => setPrecio(val)}
           >
             <NumberInputField autoFocus />
           </NumberInput>
@@ -113,14 +125,16 @@ const BcHuespedDatosFormRight = forwardRef<Handlers,Props>(({ children }, ref) =
               className="text-primario text-2xl w-36"
               onDoubleClick={() => precio != null && setIsCostEditable(true)}
             >
-              S/<span className="ml-2">{precio?.toFixed(2)}</span>
+              S/<span className="ml-2">{precio}</span>
             </div>
-            <IconButton
+            {
+            habitacionContext?.habitacion.estado !== "ocupado" && <IconButton
               icon={<EditIcon />}
               aria-label={""}
               className={"ml-2"}
               onClick={() => precio != null && setIsCostEditable(true)}
             />
+            }
           </>
         )}
         {}

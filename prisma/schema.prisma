@@ -69,3 +69,9 @@ model HabitacionPiso {
   numeroPiso   Int          @unique
   habitaciones Habitacion[]
 }
+
+model ConfiguracionDrive {
+  id Int @id @default(autoincrement())
+  idFile String?
+  nameFile String?
+}

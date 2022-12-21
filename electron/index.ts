@@ -1,6 +1,6 @@
 // Native
 import { join } from "path";
-import { syncSheet } from "./googleapi";
+import { saveConfigDrive, syncSheet } from "./googleapi";
 
 // Packages
 import { BrowserWindow, app, ipcMain } from "electron";
@@ -41,6 +41,7 @@ function createWindow() {
     installExtension(REACT_DEVELOPER_TOOLS);
     window?.loadURL(url);
   } else {
+    
     window?.loadFile(url);
   }
 
@@ -100,34 +101,40 @@ ipcMain.handle("fetchHabitaciones", async (_, id?: number) => {
 ipcMain.handle(
   "postHabitacion",
   async (_, habitacion: Prisma.HabitacionCreateInput) => {
-    return prisma.habitacion.create({
+    const ans = await prisma.habitacion.create({
       data: habitacion,
       select: {
         id: true,
       },
     });
+    syncSheet()
+    return ans
   }
 );
 
 ipcMain.handle(
   "updateHabitacion",
   async (_, habitacion: Prisma.HabitacionCreateInput, id: number) => {
-    return prisma.habitacion.update({
+    const ans = await prisma.habitacion.update({
       where: { id },
       data: habitacion,
     });
+    syncSheet()
+    return ans
   }
 );
 
 ipcMain.handle(
   "postPiso",
   async (_, piso: Prisma.HabitacionPisoCreateInput) => {
-    return prisma.habitacionPiso.create({
+    const ans = await prisma.habitacionPiso.create({
       data: piso,
       select: {
         id: true,
       },
     });
+    syncSheet()
+    return ans
   }
 );
 
@@ -146,10 +153,12 @@ ipcMain.handle(
 );
 
 ipcMain.handle("deletePisoById", async (_, id: number) => {
-  return prisma.habitacionPiso.delete({
+  const ans = await prisma.habitacionPiso.delete({
     where: { id },
     select: { id: true },
   });
+  syncSheet()
+  return ans
 });
 
 ipcMain.handle("fetchPisoById", async (_, id: number) => {
@@ -162,10 +171,12 @@ ipcMain.handle("fetchPisoById", async (_, id: number) => {
 });
 
 ipcMain.handle("deleteHabitacionById", async (_, id: number) => {
-  return prisma.habitacion.delete({
+  const ans = await prisma.habitacion.delete({
     where: { id },
     select: { id: true },
   });
+  syncSheet()
+  return ans 
 });
 
 ipcMain.handle(
@@ -178,8 +189,8 @@ ipcMain.handle(
   ) => {
     const { habitacionActual, ..._datosReserva } = datosReserva;
     console.log(datosReserva.cliente.create)
-    if (habitacion.reservaId === null)
-      return prisma.habitacion.update({
+    if (habitacion.reservaId === null){
+      const ans = await prisma.habitacion.update({
         data: {
           reservaActual: {
             create: {
@@ -197,6 +208,9 @@ ipcMain.handle(
           id: habitacion.id,
         },
       });
+      syncSheet()
+      return ans
+    }
     throw Error("La habitacion ya tiene una reservacion o esta ocupada");
   }
 );
@@ -214,7 +228,7 @@ ipcMain.handle(
           id: habitacion.id,
         },
       });
-      console.log(res)
+    syncSheet();
       return res
     }
     throw Error('esta habitacion no tiene una reserva actual')
@@ -222,7 +236,7 @@ ipcMain.handle(
 );
 
 ipcMain.handle("finalizarReserva", async (_, reserva: Reserva) => {
-  return prisma.habitacion.update({
+  const ans = await prisma.habitacion.update({
     where: {
       id: reserva.habitacionId,
     },
@@ -231,10 +245,12 @@ ipcMain.handle("finalizarReserva", async (_, reserva: Reserva) => {
       estado: 'libre'
     },
   });
+  syncSheet();
+  return ans
 });
 
-ipcMain.handle("sincronizar", async (_, fileId: string, nameFile: string) => {
-  await syncSheet(fileId, nameFile);
+ipcMain.handle("sincronizar", async (_) => {
+  await syncSheet();
 });
 
 ipcMain.handle("getReservaById", async(_, id: number) => {
@@ -259,3 +275,10 @@ ipcMain.handle('getReporte', async () => {
     }
   })
 })
+
+
+ipcMain.handle('saveConfigDrive', (_, fileId: string, sheetName: string) => {
+  return saveConfigDrive(fileId, sheetName)
+})
+
+// solucion temporal

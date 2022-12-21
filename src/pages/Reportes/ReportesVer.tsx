@@ -12,7 +12,7 @@ import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import "./style.css";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const habitacionesDatos = [
   {
@@ -24,33 +24,42 @@ const habitacionesDatos = [
     fechaSalida: "30/12/2022",
     estadia: 10,
   },
-  {
-    nombre: "Max 2 Torres 2",
-    documento: "78787878",
-    habitacion: "101",
-    precio: 150.2,
-    fechaIngreso: "10/11/2022",
-    fechaSalida: "30/11/2022",
-    estadia: 20,
-  },
-  {
-    nombre: "Max 3 Torres 3",
-    documento: "78787878",
-    habitacion: "103",
-    precio: 150.3,
-    fechaIngreso: "10/10/2022",
-    fechaSalida: "30/10/2022",
-    estadia: 30,
-  },
 ];
 
 const ReportesVer = () => {
   const gridRef = useRef<ElementRef<typeof AgGridReact>>(null);
+  const queryClient = useQueryClient()
   const [rowData, setRowData] = useState<typeof habitacionesDatos>();
-  const {data} = useQuery(['habitaciones'], () => {
-    return window.Main.db.reportes.getReporte()
-  })
-  console.log(data)
+  const [cargo, setCargo] = useState(false)
+  const { data, isSuccess } = useQuery(["habitaciones"], () => {
+    setCargo(true)
+    return window.Main.db.reportes.getReporte();
+  }, {
+    refetchOnMount: "always",
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      queryClient.invalidateQueries({queryKey: ['habitaciones'] })
+    }, 250)
+  }, [])
+
+  if (isSuccess && cargo) {
+    const rawData: typeof habitacionesDatos  = [];
+    for(const habitacion of data as unknown as (typeof data)[]) {
+      rawData.push({
+        documento: habitacion.reservaActual?.cliente?.numeroDocumento!,
+        estadia: habitacion.reservaActual?.noches!,
+        fechaIngreso: habitacion.reservaActual?.fechaIngreso?.toISOString().substring(0,10)!,
+        fechaSalida: habitacion.reservaActual?.fechaIngreso?.toISOString().substring(0,10)!,
+        habitacion: habitacion.nombreHabitacion,
+        nombre: habitacion.reservaActual?.cliente.nombresCompletos!,
+        precio: habitacion.reservaActual?.precio!,
+      })
+    }
+    setCargo(false)
+    setRowData(rawData);
+  }
 
   const [columnDefs, setColumnDefs] = useState([
     { field: "nombre" },
@@ -83,11 +92,11 @@ const ReportesVer = () => {
   return (
     <div className="h-full">
       <div className="text-3xl my-3 text-primario font-semibold">
-        Reportes Generales
+        Estado actual de habitaciones
       </div>
       <div className="ag-theme-alpine h-full w-full px-5 pb-5">
         <AgGridReact
-          className="bg-red-500"
+          // className="bg-red-500"
           ref={gridRef} // Ref for accessing Grid's API
           rowData={rowData} // Row Data for Rows
           columnDefs={columnDefs} // Column Defs for Columns

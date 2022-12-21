@@ -24,13 +24,12 @@ type Props = {
 const HabitacionReservaForm = (props: Props) => {
   const queryClient = useQueryClient();
   const habitacionContext = useContext(HabitacionContext);
-  // const {data: reserva} = useQuery()
   const huespedFormRef =
     useRef<ElementRef<typeof BcHuespedDatosFormLeft>>(null);
   const estadiaFormRef =
     useRef<ElementRef<typeof BcHuespedDatosFormRight>>(null);
-  console.log("form render", habitacionContext?.habitacion.id);
-  const { data: reserva } = useQuery(
+  
+  const { data: reserva, isLoading, isFetched } = useQuery(
     ["reserva", habitacionContext?.habitacion.id],
     async () => {
       if (habitacionContext?.habitacion.reservaId != null) {
@@ -43,6 +42,15 @@ const HabitacionReservaForm = (props: Props) => {
       return null;
     }
   );
+
+  if(isLoading) {
+    console.log('loading')
+  }
+
+  if(isFetched) {
+    console.log('isfetched')
+  }
+
 
   const { mutate: _reservarHabitacion } = useMutation(reservarHabitacion, {
     onSuccess() {
@@ -64,6 +72,7 @@ const HabitacionReservaForm = (props: Props) => {
   const onOcupar = () => {
     const datosHuesped = huespedFormRef.current?.getDatosHuesped();
     const datosEstadia = estadiaFormRef.current?.getDatos();
+    console.log('precio', datosEstadia?.precio)
     if (habitacionContext?.habitacion?.reservaId === null)
       _reservarHabitacion({
         datosReserva: {
@@ -133,6 +142,7 @@ const HabitacionReservaForm = (props: Props) => {
       currentState = BasicStateRoom.occupied;
       break;
   }
+  console.log('reserva', reserva)
   return (
     <div className="">
       <div className="flex space-x-28">
@@ -170,7 +180,7 @@ const HabitacionReservaForm = (props: Props) => {
           />
         </div>
         <div className="flex-1">
-          <BcHuespedDatosFormRight ref={estadiaFormRef}>
+          <BcHuespedDatosFormRight ref={estadiaFormRef} reserva={reserva} key={reserva?.cliente?.id}>
             {() => (
               <>
                 <_Buttons

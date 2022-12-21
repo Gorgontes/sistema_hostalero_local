@@ -4,40 +4,16 @@ import * as path from "path";
 import * as process from "process";
 import { authenticate } from "@google-cloud/local-auth";
 import { OAuth2Client } from "google-auth-library";
+import { PrismaClient } from "@prisma/client";
+import ElectronGoogleOAuth2 from "@getstation/electron-google-oauth2";
+import isDev from "electron-is-dev";
 const sheets = google.sheets("v4");
 
-export async function sincronizar() {
-  const authClient = await authorize();
-  const request = {
-    spreadsheetId: "1uoEV2fmrsqBTIUfJ4NLF2GHV4S6luDA6qIsDIFw31mQ", // TODO: Update placeholder value.
-    range: "Sheet1", // TODO: Update placeholder value.
-
-    // How the input data should be interpreted.
-    valueInputOption: "RAW", // TODO: Update placeholder value.
-
-    resource: {
-      range: "Sheet1",
-      majorDimension: "ROWS",
-      values: [['nombre','apellidos'], ['luis','motesinos'],['kleyson', 'huanatico'],],
-    },
-
-    auth: authClient,
-  };
-
-  try {
-    const response = (await sheets.spreadsheets.values.update(request)).data;
-    // TODO: Change code below to process the `response` object:
-    console.log(JSON.stringify(response, null, 2));
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-
 const SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
-const TOKEN_PATH = path.join(process.cwd(), "/electron/credentials/token.json");
+const TOKEN_PATH = path.join(process.cwd(), !isDev ? "/resources": "","/electron/credentials/token.json");
 const CREDENTIALS_PATH = path.join(
   process.cwd(),
+  !isDev ? "/resources": "",
   "/electron/credentials/credential.json"
 );
 
@@ -69,50 +45,142 @@ async function authorize() {
   if (client) {
     return client;
   }
+  let CLIENT_ID, CLIENT_SECRET;
+  try {
+    const content = fs.readFileSync(CREDENTIALS_PATH, "utf8");
+    console.log("credentials", content);
+    const {
+      installed: { client_id, client_secret },
+    } = JSON.parse(content) as any;
+    console.log(client_id, client_secret);
+    CLIENT_ID = client_id;
+    CLIENT_SECRET = client_secret;
+  } catch (e) {
+    throw Error("error new package");
+  }
+
+  const myApiOauth = new ElectronGoogleOAuth2(CLIENT_ID, CLIENT_SECRET, [
+    ...SCOPES,
+  ]);
+  try {
+    const token = await myApiOauth.openAuthWindowAndGetTokens();
+    console.log("token", token);
+    fs.writeFileSync(TOKEN_PATH, JSON.stringify({
+      type: "authorized_user",
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      refresh_token: token.refresh_token,
+    }));
+    let client = await loadSavedCredentialsIfExist();
+    if (client) {
+      return client;
+    }
+  } catch (e) {
+    console.error(e);
+    return
+  }
+  //--------------- ojo -----------------
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
   if (client.credentials) {
     await saveCredentials(client);
+  } else {
+    console.error("authorize", "hubo un error al authenticar a este usuario");
+    throw Error("Hubo un error al authenticar");
   }
   return client;
 }
 
-// @ts-ignore
-async function listMajors(auth: OAuth2Client) {
-  const sheets = google.sheets({ version: "v4", auth });
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
-    range: "Class Data!A2:E",
-  });
-  const rows = res.data.values;
-  if (!rows || rows.length === 0) {
-    console.log("No data found.");
-    return;
+const prisma = new PrismaClient();
+export async function saveConfigDrive(fileId: string, sheetName: string) {
+  console.log("intentando salver configs");
+  const authClient = await authorize();
+  if (!!!authClient) throw Error("error al registrarte con google");
+
+  const config = await prisma.configuracionDrive.findMany();
+  console.log("registro correcto");
+  if (config.length > 0) {
+    return prisma.configuracionDrive.update({
+      data: {
+        idFile: fileId,
+        nameFile: sheetName,
+      },
+      where: {
+        id: config[0].id,
+      },
+    });
   }
-  console.log("Name, Major:");
-  rows.forEach((row) => {
-    // Print columns A and E, which correspond to indices 0 and 4.
-    console.log(`${row[0]}, ${row[4]}`);
+  return prisma.configuracionDrive.create({
+    data: {
+      idFile: fileId,
+      nameFile: sheetName,
+    },
   });
 }
 
-// authorize().then(listMajors).catch(console.error);
+export async function syncSheet() {
+  let authClient: Awaited<ReturnType<typeof authorize>>;
+  try {
+    authClient = await authorize();
+  } catch (e) {
+    console.log("hubo un error =>", e);
+    console.error(e);
+    return;
+  }
+  const configs = await prisma.configuracionDrive.findMany();
 
-
-export async function syncSheet(fileId: string, sheetName: string) {
-  const authClient = await authorize();
+  if (configs.length < 0) {
+    return;
+  }
+  const idFile = configs[0].idFile!;
+  const sheetName = configs[0].nameFile!;
+  const reporte = await prisma.habitacion.findMany({
+    include: {
+      reservaActual: {
+        include: {
+          cliente: true,
+        },
+      },
+    },
+  });
+  const rawData = [];
+  for (const habitacion of reporte) {
+    rawData.push([
+      habitacion.nombreHabitacion,
+      habitacion.estado,
+      habitacion.reservaActual?.cliente?.numeroDocumento ?? '',
+      habitacion.reservaActual?.noches ?? '',
+      habitacion.reservaActual?.fechaIngreso?.toISOString().substring(0, 10) ?? '',
+      // habitacion.reservaActual?.fechaIngreso?.toISOString().substring(0, 10)!,
+      habitacion.reservaActual?.cliente.nombresCompletos ?? '',
+      habitacion.reservaActual?.precio ?? '',
+    ]);
+  }
   const request = {
-    spreadsheetId:fileId,
+    spreadsheetId: idFile,
     range: sheetName,
 
     valueInputOption: "RAW", // TODO: Update placeholder value.
 
     resource: {
-      range:sheetName,
+      range: sheetName,
       majorDimension: "ROWS",
-      values: [['nombre','apellidos'], ['luis','motesinos'],['kleyson', 'huanatico'],],
+      values: [
+        ["Sistema de hotel sincronizado"],
+        [
+          "Nombre habitacion",
+          "Estado",
+          "Documento",
+          "Estadia",
+          "FechaIngreso",
+          // "fechaSalida",
+          "Huesped",
+          "Precio",
+        ],
+        ...rawData,
+      ],
     },
 
     auth: authClient,

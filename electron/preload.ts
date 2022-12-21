@@ -10,9 +10,12 @@ declare global {
 
 const api = {
   googleapi: {
-    sincronizar: (fileId: string, nameSheet: string) => {
-      ipcRenderer.invoke("sincronizar", fileId, nameSheet);
+    sincronizar: () => {
+      ipcRenderer.invoke("sincronizar");
     },
+    saveConfigDrive: async (fileId: string, nameSheet: string) => {
+      ipcRenderer.invoke('saveConfigDrive', fileId, nameSheet)
+    }
   },
   db: {
     reportes: {
